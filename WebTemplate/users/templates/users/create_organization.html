@@ -1,0 +1,22 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+
+<div class="row">
+<div class="col-1"></div>
+<div class="col-md-10 col-12">
+<div class="ui raised very padded segment">
+
+  <h1>Создайте огранизацию</h1>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="row"><div class="col-12 col-md-9 col-lg-6">Название организации<br>{{form.org}}</div></div><br>
+    {% if form.org.errors %}<div class="text-danger">{% for error in form.org.errors %} {{ error }}<br>{% endfor %}</div>{% endif %}
+    <div class="row"><div class="col-12 col-md-9 col-lg-6">Пример корпоративной почты<br>{{form.corporate_email}}</div></div><br>
+    {% if form.corporate_email.errors %}<div class="text-danger">{% for error in form.corporate_email.errors %} {{ error }}<br>{% endfor %}</div>{% endif %}
+
+    <button type="submit">Создайте организацию</button>
+  </form>
+
+</div></div></div>
+{% endblock %}

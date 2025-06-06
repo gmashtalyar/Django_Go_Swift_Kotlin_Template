@@ -1,0 +1,28 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+
+<div class="row">
+<div class="col-1"></div>
+<div class="col-md-10 col-12">
+<div class="ui raised very padded segment">
+
+
+<h1>{{ org.org }}</h1>
+<p>Корпоратинвая почта: {{ org.corporate_email }}</p>
+
+
+
+<h4>Список пользователей</h4>
+{%for smth in users%}
+    {{smth.user.first_name}} {{smth.user.last_name}}: {{smth.user.email}}<br>
+{% endfor %}
+
+
+<br><br><br>
+<a class="me-3 py-2 text-dark text-decoration-none" href="{% url 'users:organization-add-users' org.id %}">Добавить пользователей</a>
+
+
+</div></div></div>
+
+{% endblock %}

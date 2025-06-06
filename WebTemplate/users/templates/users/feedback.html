@@ -1,0 +1,51 @@
+{% extends 'main/base.html' %}
+{% block title %}Обратная связь{% endblock %}
+
+{% block content %}
+
+
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card bg-light mb-3" >
+            <div class="card-body text-center">
+                <h2 class="ui header">Свяжитесь напрямую
+                    <div class="sub header"><br>Поделитесь вашими мыслями <br></div>
+                    </h2>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+
+
+<div class="row justify-content-center">
+
+<div class="col-md-6">
+
+    <div class="card bg-light mb-3" >
+        <div class="card-header"><b><h3>Обратная связь</h3></b></div>
+        <div class="card-body">
+            <div>
+                <form method="POST">
+                    {% csrf_token %}
+                  <div class="form-group">
+                    <div class="row">
+                      <div class="col-6">{{form.company}}</div>
+                      <div class="col-6">{{form.email}}</div>
+                    </div>
+                    <br>
+
+
+                    <br><textarea class="form-control" name="comment" rows="5" placeholder="Сообщение" id="feedback_form"></textarea><br>
+
+                  </div>
+                    <input class="btn btn-dark w-100" type="submit" value="Опубликовать">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+{% endblock %}

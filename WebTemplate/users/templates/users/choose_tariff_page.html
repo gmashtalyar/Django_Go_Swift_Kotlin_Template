@@ -1,0 +1,91 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Выбор тарифа{% endblock %}
+
+{% block content %}
+
+
+<div class="row">
+<div class="col-1"></div>
+<div class="col-md-10 col-12">
+<div class="ui raised very padded segment">
+
+
+    <h3>Выбор тарифа</h3>
+
+    <form method="POST" enctype="multipart/form-data">
+
+        {% csrf_token %}
+
+        {{ form.as_p }}
+        <br>
+
+        <div id="price-info">
+            <strong>Цена: </strong><span id="total-price">0 </span> рублей
+        </div>
+
+        <br>
+
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="oferta" name="oferta" required>
+            <label class="form-check-label" for="oferta">
+                Я принимаю <a href="{% url 'users:oferta' %}" target="_blank">Оферту</a>
+            </label>
+        </div>
+
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="privacy_policy" name="privacy_policy" required>
+            <label class="form-check-label" for="privacy_policy">
+                Я согласен с <a href="{% url 'users:privacy-policy' %}" target="_blank">Политикой конфиденциальности</a>
+            </label>
+        </div>
+
+        <div class="form-errors">
+            {% for field in form %}
+                {% if field.errors %}
+                    <ul class="error-list">
+                        {% for error in field.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <br>
+
+        <input class="btn btn-primary" type="submit" style="margin:5px;" value="Оплатить">
+    </form>
+<br><br><br><br><br>
+</div></div></div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const durationSelect = document.querySelector('select[name="duration"]');
+        const userCountSelect = document.querySelector('select[name="user_count"]');
+        const totalPriceElement = document.getElementById('total-price');
+
+        const prices = {{ prices_json|safe }};
+
+        function updatePrice() {
+            const duration = durationSelect.value;
+            const userCount = parseInt(userCountSelect.value);
+            const pricePerUser = prices[userCount][duration];
+            let totalPrice = pricePerUser * userCount;
+
+            if (duration === 'annually') {
+                totalPrice *= 12;
+            } else if (duration === 'two_years') {
+                totalPrice *= 24;
+            }
+
+            const formattedPrice = totalPrice.toLocaleString('ru-RU');
+            totalPriceElement.textContent = formattedPrice;
+        }
+
+        durationSelect.addEventListener('change', updatePrice);
+        userCountSelect.addEventListener('change', updatePrice);
+        updatePrice();
+    });
+</script>
+
+{% endblock %}

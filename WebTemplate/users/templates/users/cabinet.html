@@ -1,0 +1,65 @@
+{% extends 'main/base.html' %}
+
+{% block title %}{% endblock %}
+
+{% block content %}
+{% load static %}
+{% load auth_extras %}
+
+<br>
+
+
+<div class="row">
+<div class="col-md-10 col-12">
+<div class="ui raised very padded segment">
+
+
+{% if org is None %}
+  <div class="ui grid">
+  <div class="four wide column">
+    <div class="ui vertical fluid tabular menu">
+          <a class="item active" href="/">ХХХХХХХ</a>
+          <a class="item" href="{% url 'users:change-user-data' %}">Настройки пользователя</a>
+          <a class="item" href="{% url 'users:organization-create' %}">Создать организацию</a>
+    </div>
+  </div>
+  <div class="twelve wide stretched column">
+    <div class="ui segment">
+
+<br><br><br>
+
+    </div>
+  </div>
+</div>
+
+{% else %}
+
+    <div class="ui grid">
+  <div class="four wide column">
+    <div class="ui vertical fluid tabular menu">
+
+      <a class="item" href="{% url 'users:change-user-data' %}">Настройки пользователя</a>
+        {% if request.user|has_group:"org_admin" %}
+          <a class="item" href="{% url 'users:org-settings' %}">Настройки организации</a>
+        {% endif %}
+    </div>
+  </div>
+  <div class="twelve wide stretched column">
+    <div class="ui segment">
+
+
+
+
+    </div>
+  </div>
+</div>
+
+
+
+{% endif %}
+
+<br><br><br>
+</div></div></div>
+<br>
+
+{% endblock %}

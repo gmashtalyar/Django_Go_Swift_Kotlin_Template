@@ -1,0 +1,128 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Часто задаваемые вопросы {% endblock %}
+{% block description %}{% endblock %}
+
+{% block keywords %}{% endblock %}
+
+{% block content %}
+{% load static %}
+
+
+<div class="row">
+<div class="col-1"></div>
+<div class="col-md-10 col-12">
+<div class="ui raised very padded segment">
+
+    <header>
+        <h1>Часто задаваемые вопросы о ХХХХХХХ</h1>
+        <p>Найдите ответы на популярные вопросы о нашей платформе для анализа и визуализации данных без программистов.</p>
+    </header>
+    <main>
+        <br><br>
+        <section>
+            <h2>Общие вопросы</h2>
+
+                <h3>Что такое ХХХХХХХ?</h3>
+                <p>ХХХХХХХ — это no-code платформа для загрузки, анализа и визуализации данных в виде дашбордов. Подходит для бизнеса любого масштаба.</p>
+
+            <br><br>
+        </section>
+
+        <section>
+            <h2>Работа с дашбордами</h2>
+
+            
+                <h3>Как создать дашборд?</h3>
+                <p>Загрузите данные, выберите тип визуализации (график, таблица, диаграмма) и настройте элементы интерфейса с помощью конструктора.</p>
+            
+
+            <br><br>
+        </section>
+
+        <section>
+            <h2>Интеграции и безопасность</h2>
+
+            
+                <h3>Какие есть интеграции?</h3>
+                <p>Поддерживаются интеграции с Excel, API, PostgreSQL, 1С и другими системами.</p>
+            
+            <br><br>
+        </section>
+
+        <section>
+            <h2>Тарифы и поддержка</h2>
+
+            
+                <h3>Сколько стоит SimpleBoard?</h3>
+                <p>Доступен бесплатный тариф с базовым функционалом. Также есть платные тарифы с расширенными возможностями. Ознакомьтесь с <a href="{% url 'users:tariff-plan' %}">тарифами</a>.</p>
+            
+
+        </section>
+    </main>
+
+
+
+
+<br><br><br><br>
+</div></div></div>
+
+
+</div>
+
+<div class="ui inverted vertical footer segment">
+  <div class="ui container">
+    <div class="ui stackable inverted divided equal height stackable grid">
+      <div class="three wide column">
+        <h4 class="ui inverted header">О компании</h4>
+        <div class="ui inverted link list">
+          <p>ООО "ФинТехДокументы"</p>
+          <p>ИНН 9719055485</p>
+          <a class="me-3 py-2 text-white text-decoration-none" href="{% url 'users:oferta' %}">Оферта</a><br><br>
+          <a class="me-3 py-2 text-white text-decoration-none" href="{% url 'users:privacy-policy' %}">Политика перс.данных</a>
+          <br><br><br><br>
+        </div>
+      </div>
+      <div class="three wide column">
+        <h4 class="ui inverted header">Связь</h4>
+        <div class="ui inverted link list">
+          <p>ceo@fintechdocs.ru</p>
+          <p>+7 (916) 979 8743</p>
+          <p>Машталяр Геннадий Олегович</p>
+        </div>
+      </div>
+      <div class="seven wide column">
+        <h4 class="ui inverted header">Запросите доступ к демо-версии</h4>
+          <p><strong class="fw-bold">Попробуйте SimpleBoard прямо сейчас</strong> и оцените удобство работы с дашбордами без программистов!</p>
+          <a class="me-3 py-2 text-white text-decoration-none" href="{% url 'users:faq' %}">Часто задаваемые вопросы (FAQ)</a><br><br>
+      </div>
+      <div class="three wide column">
+        <a href="/" class="app-link">
+          <img src="{% static 'AppStore_Badge.png' %}" alt="Скачайте iPhone приложения для управления кредитными рисками на App Store.">
+        </a>
+
+        <a href="/" class="app-link">
+          <img src="{% static 'APK_Badge.png' %}" alt="Скачайте Android приложения для управления кредитными рисками.">
+        </a>
+
+        <img src="{% static 'made_in_white.png' %}" alt="Сделано в России" class="app-link" style="width: 150px;">
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<style>
+  .app-link {
+    display: inline-block; /* Ensure links appear on the same line */
+  }
+
+  .app-link img {
+    width: 150px; /* Adjust the width to your preference */
+    height: auto; /* Maintain the aspect ratio */
+  }
+</style>
+
+{% endblock %}

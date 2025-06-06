@@ -1,0 +1,41 @@
+{%  extends 'main/base.html'%}
+
+{% block title %}
+Форма регистрации
+{% endblock %}
+
+{% block content %}
+
+<br><br>
+
+<div class="container">
+    <div class="col-sm-6">
+        <div class="panel-heading h2">Регистрация</div>
+        <br>
+        <div class="panel-body">
+            <form class="site-form" action="{% url 'users:signup' %}" method="post">
+                {% csrf_token %}
+                <div class="row"><div class="col-12">Логин:<br>{{form.username}}</div></div><br>
+                <div class="row"><div class="col-12">Имя:<br>{{form.first_name}}</div></div><br>
+                <div class="row"><div class="col-12">Фамилия:<br>{{form.last_name}}</div></div><br>
+                <div class="row"><div class="col-12">Рабочая почта:<br>{{form.email}}<div class="text-danger">{{ form.email.errors }}</div></div></div><br>
+                <div class="row"><div class="col-12">Пароль:<br>{{form.password1}}</div></div><br>
+                <div class="row"><div class="col-12">Подтверждение пароля:<br>{{form.password2}}</div></div><br>
+                <span class="helptext">Для подтверждения введите, пожалуйста, пароль ещё раз.</span><br><br>
+
+                <input type="submit" class="btn btn-dark" value="Регистрация"/>
+            </form>
+        </div>
+    </div>
+</div>
+
+<br><br><br><br>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('input[name="password1"], input[name="password2"]').forEach(function(input) {
+            input.classList.add('form-control');
+        });
+    });
+</script>
+{% endblock %}

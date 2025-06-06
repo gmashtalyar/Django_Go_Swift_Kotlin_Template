@@ -1,0 +1,38 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+
+
+<div class="row">
+<div class="col-1"></div>
+<div class="col-md-10 col-12">
+<div class="ui raised very padded segment">
+
+
+<h1>Добавьте пользователей организацию</h1>
+
+    <p>Подтвердите зарегистрирвоанных пользователей с вашей корпоративной почтой. </p>
+    <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+            <div>
+                {{ field }}
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {% if field.help_text %}
+                    <small>{{ field.help_text }}</small>
+                {% endif %}
+                {% if field.errors %}
+                    <div class="text-danger">
+                        {{ field.errors }}
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+        <br><br>
+        <button type="submit">Подтвердите пользователей</button>
+    </form>
+
+
+</div></div></div>
+
+{% endblock %}

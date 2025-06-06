@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Смена пароля</title>
+</head>
+<body>
+    <p>Добрый день, {{ user.first_name }}!</p>
+    <p>Вы запросили обновление пароля для ХХХХХХ.</p>
+    <p><b>Если вы этого не делали, то сообщите об этом администратору!</b></p>
+    <p>Ваш логин: {{ user.username }}</p>
+    <p>Далее ссылка для смены пароля:</p>
+    <a href="{{ reset_url }}">{{ reset_url }}</a>
+</body>
+</html>

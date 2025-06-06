@@ -1,0 +1,43 @@
+{%  extends 'main/base.html'%}
+
+{% block title %}
+Форма входа
+{% endblock %}
+
+{% block content %}
+<br><br>
+
+<div class="row">
+<div class="col-1"></div>
+<div class="col-md-10 col-12">
+<div class="ui raised very padded segment">
+
+<div class="container">
+    <div class="col-sm-6">
+        <div class="panel-heading h2">Вход</div>
+        <br>
+        <div class="panel-body">
+            <form action="{% url 'users:login' %}" method="post">
+                {% csrf_token %} {{ form.as_p }}
+                <input type="submit" class="btn btn-dark" value="Войти"/>
+                <br>
+                <br>
+                <a href="{% url 'users:password-reset-request' %}">Восстановление пароля</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<br><br><br><br>
+</div></div></div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var labelElement = document.querySelector('label[for="id_password"]');
+        if (labelElement) {
+            labelElement.innerText = 'Пароль:';
+        }
+    });
+</script>
+{% endblock %}

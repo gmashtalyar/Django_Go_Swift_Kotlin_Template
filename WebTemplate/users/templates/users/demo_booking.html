@@ -1,0 +1,36 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Запись на демо{% endblock %}
+
+{% block content %}
+
+
+<div class="row">
+<div class="col-1"></div>
+<div class="col-md-10 col-12">
+<div class="ui raised very padded segment">
+
+
+    <h3>Запись на демонстрацию</h3>
+
+    <form method="POST" enctype="multipart/form-data">
+
+        {% csrf_token %}
+
+        <div class="col">
+        <br><div class="col-12 col-md-9 col-lg-6">Имя <span class="mandatory" style="color: red"><b>*</b></span><br>{{form.first_name}}</div>
+        <br><div class="col-12 col-md-9 col-lg-6">Фамилия <span class="mandatory" style="color: red"><b>*</b></span><br>{{form.last_name}}</div>
+        <br><div class="col-12 col-md-9 col-lg-6">Корпоративная почта <span class="mandatory" style="color: red"><b>*</b></span><br>{{form.email}}</div>
+        <br><div class="col-12 col-md-9 col-lg-6">Название компании <span class="mandatory" style="color: red"><b>*</b></span><br>{{form.company_name}}</div>
+        <br><div class="col-12 col-md-9 col-lg-6">Номер телефона<br>{{form.phone_number}}</div>
+        <br><div class="col-12 col-md-9 col-lg-6">Сообщение<br>{{form.message}}</div>
+        <br><div class="col-12 col-md-9 col-lg-6">Как вы о нас узнали?<br>{{form.channel}}</div>
+        </div>
+        <br>
+        <input class="btn btn-primary" type="submit" style="margin:5px;" value="Связаться">
+    </form>
+<br><br><br><br>
+</div></div></div>
+
+<br><br><br>
+{% endblock %}

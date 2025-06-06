@@ -1,0 +1,60 @@
+{%  extends 'main/base.html'%}
+
+{% block title %}
+Изменение аккаунта
+{% endblock %}
+
+{% block content %}
+{% load auth_extras %}
+
+<div class="row">
+<div class="col-md-10 col-12">
+<div class="ui raised very padded segment">
+
+
+
+<div class="ui grid">
+  <div class="four wide column">
+    <div class="ui vertical fluid tabular menu">
+
+            <a class="item" href="{% url 'users:change-user-data' %}">Настройки пользователя</a>
+        {% if request.user|has_group:"org_admin" %}
+          <a class="item active" href="{% url 'users:org-settings' %}">Настройки организации</a>
+        {% endif %}
+    </div>
+  </div>
+  <div class="twelve wide stretched column">
+    <div class="ui segment">
+
+
+
+        {% if request.user|has_group:"org_admin" %}
+            <a class="me-3 py-2 text-dark text-decoration-none" href="{% url 'users:organization-add-users' org.id %}">Добавить пользователей</a>
+            <a class="me-3 py-2 text-dark text-decoration-none" href="{% url 'users:company-properties' %}">Управлять организацией</a>
+            <a class="me-3 py-2 text-dark text-decoration-none" href="{% url 'users:user-management' %}">Управление правами пользователей</a>
+        {% endif %}
+
+        <br><br><br>
+
+        {% if request.user|has_group:"org_admin" %}
+            {% if not org.payment %}
+                <br><br><br><br>
+            <div class="row">
+              <div class="d-flex justify-content-center">
+                  <a href="{% url 'users:choose-tariff-page' %}" class="btn btn-dark btn-lg px-4 me-md-2 fw-bold">Оплатить</a>
+              </div>
+            </div>
+            {% else %}
+                <p>Оплата произведена. Ожидайте подключения.</p>
+            {% endif %}
+        {% endif %}
+
+<br><br><br>
+
+    </div>
+  </div>
+</div>
+
+</div></div></div>
+
+{% endblock %}

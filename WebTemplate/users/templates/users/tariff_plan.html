@@ -1,0 +1,71 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Тарифный план{% endblock %}
+
+{% block content %}
+{% load static %}
+
+
+
+<table class="ui celled table">
+  <thead>
+    <tr>
+        <th colspan="4" style="text-align: center;">Тарифный план</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><b>Тариф</b></td>
+      <td><b>В месяц</b></td>
+      <td><b>За 1 год</b></td>
+      <td><b>За 2 года</b></td>
+    </tr>
+    <tr>
+      <td>До 5 пользователей</td>
+      <td>Бесплатно</td>
+      <td>Бесплатно</td>
+      <td>Бесплатно</td>
+    </tr>
+    <tr>
+      <td>До 50 пользователей</td>
+      <td>219 руб за пользователя</td>
+      <td>199 руб за пользователя</td>
+      <td>169 руб за пользователя</td>
+    </tr>
+    <tr>
+      <td>До 100 пользователей</td>
+      <td>209 руб за пользователя</td>
+      <td>189 руб за пользователя</td>
+      <td>159 руб за пользователя</td>
+    </tr>
+    <tr>
+      <td>До 250 пользователей</td>
+      <td>199 руб за пользователя</td>
+      <td>179 руб за пользователя</td>
+      <td>149 руб за пользователя</td>
+    </tr>
+    <tr>
+      <td>До 500 пользователей</td>
+      <td>189 руб за пользователя</td>
+      <td>169 руб за пользователя</td>
+      <td>139 руб за пользователя</td>
+    </tr>
+    <tr>
+      <td>От 1000 пользователей</td>
+      <td>175 руб за пользователя</td>
+      <td>150 руб за пользователя</td>
+      <td>100 руб за пользователя</td>
+    </tr>
+  </tbody>
+</table>
+
+<br><br><br>
+<div class="row">
+  <div class="d-flex justify-content-center">
+      <a href="{% url 'users:choose-tariff-page' %}" class="btn btn-dark btn-lg px-4 me-md-2 fw-bold">Выбрать тариф</a>
+  </div>
+</div>
+
+<br><br><br><br>
+
+{% endblock %}

@@ -1,0 +1,32 @@
+{%  extends 'main/base.html'%}
+
+{% block title %}
+Подтверждение пароля
+{% endblock %}
+
+{% block content %}
+<br><br>
+
+<div class="container">
+    <div class="col-sm-6">
+        <div class="panel-heading h2">Подтверждение пароля</div>
+        <br>
+        <div class="panel-body">
+            {% if messages %}
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+            <form method="POST">
+                {% csrf_token %}
+                <label for="new_password">Новый пароль: </label><br><br>
+                <div class="col-6"><input class="form-control" type="password" placeholder="Новый пароль" name="new_password" required></div><br>
+                <button type="submit">Обновить пароль</button>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<br><br><br><br>
+{% endblock %}

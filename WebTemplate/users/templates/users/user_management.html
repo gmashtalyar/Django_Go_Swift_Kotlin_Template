@@ -1,0 +1,39 @@
+{% extends 'main/base.html' %}
+{% block content %}
+<div class="row">
+    <div class="col-1"></div>
+    <div class="col-md-10 col-12">
+        <div class="ui raised very padded segment">
+            <h1>Управление пользователями {{ org.org }}</h1>
+
+            <p>Корпоратинвая почта: {{ org.corporate_email }}</p>
+
+            {% if users %}
+                {% for user_data in users %}
+                    <div class="ui segment">
+                        <!-- Display user and groups -->
+                        <p>{{ user_data.user.username }} - Права доступа:
+                            {% for group in user_data.user.groups.all %}
+                                {{ group.name }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </p>
+
+                        <div style="display: flex; gap: 10px;">
+                            {% if not user_data.is_viewer %}
+                                <a href="{% url 'users:assign-group' user_data.user.id 'viewer' %}" class="mini ui primary button">Назначить Viewer</a>
+                            {% endif %}
+                            {% if user_data.is_viewer %}
+                                <a href="{% url 'users:remove-group' user_data.user.id 'viewer' %}" class="mini ui red button">Убрать Viewer</a>
+                            {% endif %}
+
+
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>Пользователей нет, пригласите их зарегистрироваться.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

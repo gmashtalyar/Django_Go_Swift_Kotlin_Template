@@ -1,0 +1,52 @@
+{%  extends 'main/base.html'%}
+
+{% block title %}
+Изменение аккаунта
+{% endblock %}
+
+{% block content %}
+{% load auth_extras %}
+
+<div class="row">
+<div class="col-md-10 col-12">
+<div class="ui raised very padded segment">
+
+
+
+<div class="ui grid">
+  <div class="four wide column">
+    <div class="ui vertical fluid tabular menu">
+        <a class="item active" href="{% url 'users:change-user-data' %}">Настройки пользователя</a>
+        {% if request.user|has_group:"org_admin" %}
+          <a class="item" href="{% url 'users:org-settings' %}">Настройки организации</a>
+        {% endif %}
+    </div>
+  </div>
+  <div class="twelve wide stretched column">
+    <div class="ui segment">
+
+        <div class="panel-heading h2">Смена логина и почты</div>
+        <br>
+        <div class="panel-body">
+            <form class="site-form" action="{% url 'users:change-user-data' %}" method="post">
+                {% csrf_token %}
+
+                <div class="row"><div class="col-12">Логин:<br>{{form.username}}</div></div><br>
+                <div class="row"><div class="col-12">Рабочая почта:<br>{{form.email}}</div></div><br>
+                <div class="row"><div class="col-12">Имя:<br>{{form.first_name}}</div></div><br>
+                <div class="row"><div class="col-12">Фамилия:<br>{{form.last_name}}</div></div><br>
+                <input type="submit" class="btn btn-dark" value="Изменить"/>
+            </form>
+        </div>
+
+
+
+<br><br><br>
+
+    </div>
+  </div>
+</div>
+
+</div></div></div>
+
+{% endblock %}
