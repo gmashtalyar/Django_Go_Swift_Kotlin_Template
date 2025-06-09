@@ -1,0 +1,253 @@
+{% extends 'main/base.html' %}
+
+{% block title %}XXXXXXXX – Простые дашборды без программистов{% endblock %}
+
+{% block description %}Простое решение для визуализации данных и создания дашбордов без программистов. Попробуйте XXXXXXXX бесплатно.
+{% endblock %}
+
+{% block scripts %}
+
+{% endblock %}
+
+{% block content %}
+{% load static %}
+
+
+
+<div class="container my-5">
+    <div class="row">
+      <div class="mb-4"></div><div class="mb-4"></div>
+        <div class="col-1"></div>
+      <div class="col-lg-5 p-3 p-lg-5 pt-lg-3">
+        <h1 class="ui header">
+          <section>
+              <div style="font-size: 24px; font-weight: bold;">
+                <span id="changing-text" style="color: #007BFF;">Финансы</span> <br>работа<span id="changing-verb" style="transition: opacity 0.5s ease-in-out;">ют</span> на данных. Данные работают в XXXXXXXX.
+              </div>
+
+              <div class="sub header">Создавайте дашборд сами, без программистов и аналитиков, и делитесь дашбордом с командой</div>
+          </section>
+          <br>
+          <div class="d-grid gap-2 d-md-flex justify-content-md-start mb-4 mb-lg-3">
+          <a href="{% url 'users:feedback' %}" class="btn btn-dark btn-lg px-4 me-md-2 fw-bold">Связаться</a>
+          <a href="https://www.XXXXXXXX.ru/public-dashboard/5k2FaUHlbJkHEms6q5IQxThZ5ZleRkTq/" class="btn btn-dark btn-lg px-4 me-md-2 fw-bold">Демо</a>
+          <a href="{% url 'users:demo-booking' %}" class="btn btn-dark btn-lg px-4 me-md-2 fw-bold">Демонстрация</a>
+          </div>
+        </h1>
+
+      </div>
+      <div class="col-lg-5 p-0 overflow-hidden shadow-lg">
+        <img src="{% static 'front_page_pic.png' %}" style="max-width: 100%; height: auto; display: block; margin: 0 auto; border: 1px solid #fafafc;"/>
+      </div>
+    </div>
+  </div>
+
+
+
+
+<div class="container my-5">
+    <br><br><br>
+  <div class="row">
+      <div class="col-1"></div>
+      <div class="col-lg-9">
+          <iframe src="https://www.simpledemo.ru/render/XXXXXXXX/" width="100%" height="auto" frameborder="0" scrolling="no" style="max-width: 100%; min-height: 80vh; display: block;"></iframe>
+      </div>
+  </div>
+</div>
+
+<div class="container my-5">
+    <div class="row">
+    <div class="col-1 d-none d-md-block"></div>
+        <div class="col-md-4 p-3 p-lg-5 pt-lg-3 d-flex flex-column justify-content-center align-items-start" style="flex: 1; padding: 20px;">
+            <section>
+                <h2 class="ui header text-start">Дашборды для бизнеса без программистов</h2>
+                    <p class="lead">XXXXXXXX – это инновационное решение для <strong class="fw-bold">визуализации данных</strong> и построения <strong class="fw-bold">дашбордов</strong> без помощи технических специалистов. В отличие от сложных BI-инструментов вроде Power BI или Qlik Sense, наш сервис предлагает <strong class="fw-bold">простой и доступный</strong> способ работы с данными.</p>
+            </section>
+        </div>
+    </div>
+</div>
+
+  <div class="container product-container">
+
+    <div class="row" style="display: flex; font-family: Arial, sans-serif;">
+
+        <div class="row">
+        <div class="col-1 d-none d-md-block"></div>
+            <div class="col-md-4 p-3 p-lg-5 pt-lg-3 d-flex flex-column justify-content-center align-items-start" style="flex: 1; padding: 20px;">
+              <section>
+              <h2 class="ui header text-start">Возможности XXXXXXXX</h2>
+                    <ul class="lead">
+                        <li><strong class="fw-bold">Загрузка данных</strong> из различных источников: <strong class="fw-bold">Excel, PostgreSQL, API, 1C, Web</strong> и других.</li>
+                        <li><strong class="fw-bold">Автоматический анализ и визуализация данных</strong> с использованием <strong class="fw-bold">Pandas</strong> и машинного обучения.</li>
+                        <li><strong class="fw-bold">Создание дашбордов</strong> без программистов и аналитиков – предприниматели, CFO, директора отделов могут сами создавать и делиться аналитикой.</li>
+                        <li><strong class="fw-bold">Интеллектуальные рекомендации</strong> – AI анализирует каждую строку и колонку, выделяет важные данные и предлагает <strong class="fw-bold">новые дашборды</strong>.</li>
+                        <li><strong class="fw-bold">Работа в облаке</strong> – доступ с любого устройства: <strong class="fw-bold">веб, iPhone, Android</strong>.</li>
+                    </ul>
+              </section>
+            </div>
+        </div>
+
+        <div class="row">
+        <div class="col-1 d-none d-md-block"></div>
+            <div class="col-md-5 p-3 p-lg-5 pt-lg-3 d-flex flex-column justify-content-center align-items-start" style="flex: 1; padding: 20px;">
+              <section>
+                <h2 class="ui header text-start">Источники данных</h2>
+                <p class="lead">Подключайте сами разные источники данных: Excel, 1C, Postgres и другие.</p>
+              </section>
+            </div>
+            <div class="col-md-6" style="flex: 2; padding: 20px; display: flex; align-items: center; justify-content: center;">
+                  <div class="d-flex justify-content-between align-items-center w-100 gap-3 px-4">
+                    <img src="{% static 'data_logo_1.png' %}" alt="Image 1" style="max-height: 100px; width: auto;">
+                    <img src="{% static 'data_logo_2.png' %}" alt="Image 2" style="max-height: 100px; width: auto;">
+                    <img src="{% static 'data_logo_3.png' %}" alt="Image 3" style="max-height: 100px; width: auto;">
+                  </div>
+            </div>
+
+      </div>
+
+        <div class="row">
+        <div class="col-1 d-none d-md-block"></div>
+            <div class="col-md-5 p-3 p-lg-5 pt-lg-3 d-flex flex-column justify-content-center align-items-start" style="flex: 1; padding: 20px;">
+                <section>
+              <h2 class="ui header text-start">Визуализация</h2>
+                <p class="lead"><br>Легко создавайте и делитесь дашбордами — от аналитических рабочих нагрузок
+                  в масштабе миллионов строк для повседневных операционных рабочих процессов — с более чем 15 типами визуализации.</p>
+                <br><br><br>
+                </section>
+            </div>
+          <div class="col-md-6" style="flex: 2; padding: 20px; display: flex; align-items: center; justify-content: center;">
+                    <img src="{% static 'data_logo_2.png' %}" alt="Image 2" style="max-height: 100px; width: auto;">
+          </div>
+
+      </div>
+
+
+      <div class="row">
+        <div class="col-1 d-none d-md-block"></div>
+            <div class="col-md-5 p-3 p-lg-5 pt-lg-3 d-flex flex-column justify-content-center align-items-start" style="flex: 1; padding: 20px;">
+                <section>
+                    <h2 class="ui header text-start">Доступы к данными</h2>
+                    <p class="lead"><br>Управляйте доступом к данным с помощью разрешений.</p>
+                    <br><br><br><br><br><br><br>
+                </section>
+          </div>
+          <div class="col-md-6" style="flex: 2; padding: 20px; display: flex; align-items: center; justify-content: center;">
+                    <img src="{% static 'data_logo_2.png' %}" alt="Image 2" style="max-height: 100px; width: auto;">
+          </div>
+
+      </div>
+    </div>
+  </div>
+
+
+<div class="container">
+  <div class="row">
+      <div class="col-1 d-none d-md-block"></div>
+        <div class="col-md-4 p-3 p-lg-5 pt-lg-3 d-flex flex-column justify-content-center align-items-start" style="flex: 1; padding: 20px;">
+        <section>
+          <h2 class="ui header text-start">Почему XXXXXXXX лучше BI-дашбордов?</h2>
+          <p class="lead"><strong class="fw-bold">BI дашборды</strong> в Power BI и Qlik Sense требуют специальных знаний и дорогостоящих специалистов. <strong class="fw-bold">XXXXXXXX – это простыми словами</strong> <strong class="fw-bold">dashboard</strong>, который каждый может настроить сам. Наши клиенты – это предприниматели, финансовые директора, руководители отделов продаж, которым важно быстро принимать решения на основе данных.</p>
+        </section>
+        <section>
+            <br>
+            <h2 class="ui header text-start">Интеграции и удобство использования</h2>
+            <ul class="lead">
+                <li>Гибкая работа с данными: <strong class="fw-bold">дашборды в Excel</strong>, PostgreSQL, API, 1C, Web.</li>
+                <li>Полный контроль над аналитикой без помощи программистов.</li>
+                <li><strong class="fw-bold">Что такое дашборды?</strong> Это ваш ключ к принятию решений!</li>
+                <li>Применение в разных отраслях: e-commerce, финансы, производство, маркетинг.</li>
+            </ul>
+        </section>
+            <br>
+        <section>
+            <h2 class="ui header text-start">Простая настройка и готовые решения</h2>
+            <p class="lead">XXXXXXXX – это <strong class="fw-bold">dashboard</strong>, который можно запустить за 5 минут. <strong class="fw-bold">Создать дашборд</strong> легко – просто загрузите данные и настройте визуализацию. Поддерживаем <strong class="fw-bold">визуализацию данных графики, таблицы, диаграммы</strong>. Если вы искали <strong class="fw-bold">пример дашборда</strong>, попробуйте <strong class="fw-bold">XXXXXXXX</strong> бесплатно!</p>
+        </section>
+      </div>
+  </div>
+</div>
+
+  <div class="container">
+    <div class="row">
+      <div class="mb-4"></div><div class="mb-4"></div>
+        <div class="col-1 d-none d-md-block"></div>
+      <div class="col-md-4 p-3 p-lg-5 pt-lg-3 d-flex flex-column justify-content-center align-items-start" style="flex: 1; padding: 20px;">
+        <h2 class="ui header text-start">Цены</h2>
+          <p class="lead">Дешевле одного кофе в месяц за пользователя.</p>
+
+
+          <h2 class="ui header text-start">Исскуственный интелект</h2>
+          <p class="lead">За отдельную плату подключите исскуственный интелект к вашим данным.</p>
+
+
+      </div>
+    </div>
+  </div>
+
+
+<br><br><br>
+
+
+
+{% endblock %}
+
+
+
+
+{% block footer %}
+<div class="ui inverted vertical footer segment">
+    <div class="ui container">
+      <div class="ui stackable inverted divided equal height stackable grid">
+        <div class="three wide column">
+          <h4 class="ui inverted header">О компании</h4>
+          <div class="ui inverted link list">
+            <p>ООО "ФинТехДокументы"</p>
+            <p>ИНН 9719055485</p>
+            <a class="me-3 py-2 text-white text-decoration-none" href="{% url 'users:oferta' %}">Оферта</a><br><br>
+            <a class="me-3 py-2 text-white text-decoration-none" href="{% url 'users:privacy-policy' %}">Политика перс.данных</a>
+            <br><br><br><br>
+          </div>
+        </div>
+        <div class="three wide column">
+          <h4 class="ui inverted header">Связь</h4>
+          <div class="ui inverted link list">
+            <p>ceo@fintechdocs.ru</p>
+            <p>+7 (916) 979 8743</p>
+            <p>Машталяр Геннадий Олегович</p>
+          </div>
+        </div>
+        <div class="seven wide column">
+          <h4 class="ui inverted header">Запросите доступ к демо-версии</h4>
+
+          <footer>
+              <p><strong class="fw-bold">Попробуйте XXXXXXXX прямо сейчас</strong> и оцените удобство работы с дашбордами без программистов!</p>
+              <a class="me-3 py-2 text-white text-decoration-none" href="{% url 'users:faq' %}">Часто задаваемые вопросы (FAQ)</a><br><br>
+          </footer>
+
+        </div>
+        <div class="three wide column">
+           <a href="https://apps.apple.com/ru/app/simple-board/XXXXXXXX" class="app-link">
+             <img src="{% static 'AppStore_Badge.png' %}" alt="Скачайте iPhone приложения для управления кредитными рисками на App Store."></a>
+
+           <a href="https://www.XXXXXXXX.ru/users/download-android-app/" class="app-link">
+             <img src="{% static 'APK_Badge.png' %}" alt="Скачайте Android приложения для управления кредитными рисками."></a>
+
+           <img src="{% static 'made_in_white.png' %}" alt="Сделано в России" class="app-link" style="width: 150px;">
+
+        </div>
+      </div>
+    </div>
+</div>
+
+
+<style>
+  .app-link {
+    display: inline-block;
+  }
+
+  .app-link img {
+    width: 150px;
+    height: auto;
+  }
+</style>
+{% endblock %}

@@ -14,7 +14,7 @@ def send_demo_request_email_task():
 
 @shared_task
 def send_payment_notification_email_task(organization_id):
-    from users.models import Organization
+    from .models import Organization
     organization = Organization.objects.get(id=organization_id)
     subject = 'Simple Board: Payment'
     message = f'A new payment recieved for {organization.org}.'

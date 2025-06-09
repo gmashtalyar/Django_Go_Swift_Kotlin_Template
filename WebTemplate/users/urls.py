@@ -34,6 +34,7 @@ urlpatterns = [
     path('user-management/', views.user_management, name='user-management'),
     path('assign-group/<int:user_id>/<str:group_name>/', views.assign_group, name='assign-group'),
     path('remove-group/<int:user_id>/<str:group_name>/', views.remove_group, name='remove-group'),
+    path('download-android-app', views.download_android_app, name='download-android-app'),
 
 ]
 

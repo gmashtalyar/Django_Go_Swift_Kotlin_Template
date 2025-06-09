@@ -18,8 +18,8 @@ from django.core.mail import send_mail
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from .decorators import allowed_users, organization_payment_required
-import json
-import os
+import json, os
+from django.core.files.base import ContentFile
 from main_app.models import BusinessLogic
 
 
@@ -314,3 +314,15 @@ def remove_group(request, user_id, group_name):
 # @cache_page(60 * 60 * 24 * 7)
 def faq(request):
     return render(request, 'users/faq.html')
+
+
+def download_android_app(request):
+    file_path = "/app/Documents/app.apk"
+    if not os.path.exists(file_path):
+        raise Http404("File not found")
+    with open(file_path, 'rb') as file:
+        file_data = file.read()
+        file_content = ContentFile(file_data)
+    response = HttpResponse(file_content, content_type='application/vnd.android.package-archive')
+    response['Content-Disposition'] = f'attachment; filename="app.apk"'
+    return response

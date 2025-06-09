@@ -5,7 +5,7 @@ from django.db.models.signals import post_save
 from .tasks import send_demo_request_email_task, send_payment_notification_email_task
 from django.utils import timezone
 
-from main_app.models import BusinessModel
+# from main_app.models import BusinessModel
 
 User = settings.AUTH_USER_MODEL
 
