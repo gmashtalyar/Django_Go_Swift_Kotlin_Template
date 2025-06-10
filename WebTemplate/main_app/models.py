@@ -11,12 +11,12 @@ class SomeChoices(models.TextChoices):
     AREA = 'area', 'Область'
 
 
-class BusinessLogic(models.Model):
+class BusinessLogicModel(models.Model):
     pass
 
 
 class Documents(models.Model):
-    client_inn = models.ForeignKey(BusinessLogic, on_delete=models.CASCADE)
+    client_inn = models.ForeignKey(BusinessLogicModel, on_delete=models.CASCADE)
     document = models.FileField(upload_to='Documents/', null=True, blank=True)
     document_upload_date = models.DateField(default=timezone.now)
 

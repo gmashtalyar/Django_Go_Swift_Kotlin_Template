@@ -2,7 +2,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, User
 from django.contrib.auth.models import User
 from django import forms
 from django.contrib.auth.models import Group
-from .models import Organization, Demo, TariffModel, FeedbackComments, DashboardComments, DashboardItemComments
+from .models import Organization, Demo, TariffModel, FeedbackComments, BusinessModelComments
 from django.core.exceptions import ValidationError
 
 
@@ -120,19 +120,10 @@ class FeedbackCommentsForm(forms.ModelForm):
         fields = ['email', 'company', 'comment']
 
 
-class DashboardCommentForm(forms.ModelForm):
-    comment = forms.CharField(label="Новый комментарий", widget=forms.Textarea(attrs={'rows':4, 'cols':6}))
-
-    class Meta:
-        labels = {'comment': "Новый комментарий"}
-        model = DashboardComments
-        fields = ['comment']
-
-
-class DashboardItemCommentForm(forms.ModelForm):
+class ItemCommentForm(forms.ModelForm):
     comment = forms.CharField(label="Новый комментарий", widget=forms.Textarea(attrs={'rows': 4, 'cols': 6}))
 
     class Meta:
         labels = {'comment': "Новый комментарий"}
-        model = DashboardItemComments
+        model = BusinessModelComments
         fields = ['comment']

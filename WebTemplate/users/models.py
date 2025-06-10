@@ -5,7 +5,7 @@ from django.db.models.signals import post_save
 from .tasks import send_demo_request_email_task, send_payment_notification_email_task
 from django.utils import timezone
 
-# from main_app.models import BusinessModel
+from main_app.models import BusinessLogicModel
 
 User = settings.AUTH_USER_MODEL
 
@@ -71,7 +71,7 @@ class FeedbackComments(models.Model):
 
 
 class BusinessModelComments(models.Model):
-    dashboard = models.ForeignKey(BusinessModel, on_delete=models.CASCADE)
+    item = models.ForeignKey(BusinessLogicModel, on_delete=models.CASCADE)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     comment = models.TextField()
     comment_date = models.DateTimeField(default=timezone.now)
