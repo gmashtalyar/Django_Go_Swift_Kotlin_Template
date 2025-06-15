@@ -1,0 +1,37 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Настройки оповещений{% endblock %}
+
+{% block content %}
+<h2>Настройка оповещений по почте</h2>
+<p>Здесь вы можете сделать выбор <b>почтовых</b> оповещений. Оповещения приходят от имени ХХХХХХ (ХХХХХ@fintechdocs.ru) на указанную почту при регистрации ({{email}}).</p>
+<p>Оповещения также можно видеть в самом приложении, во вкладке оповещения или в личном кабинете. Поэтому выбирайте действительно важные оповещения, иначе будет спам.</p>
+
+
+<form method="POST" enctype="multipart/form-data">
+{% csrf_token %}
+<div class="row">
+    <div class="col-5">
+        <h4 class="ui sub header">Комментарии</h4>
+        <p>Здесь можно настроить оповещения по комментариям в кредитных заявках.</p>
+        <div class="ui toggle checkbox">{{form.comment_notifications}}<label>Обсуждение</label></div><br><br>
+    </div>
+    <div class="col-5">
+        <h4 class="ui sub header">Статусы</h4>
+            {% for type in form.notification_types.field.choices %}
+                <div class="ui toggle checkbox">
+                    <input type="checkbox" name="notification_types" value="{{ type.0 }}"
+                           {% if type.0 in form.initial.notification_types %}checked{% endif %}>
+                    <label>{{ type.1 }}</label>
+                </div><br><br>
+            {% endfor %}
+    </div>
+</div>
+    <br>
+    <input class="btn btn-primary" type="submit" value="Подтвердить">
+</form>
+
+    <br>
+    <a class="btn btn-primary" href="{% url 'home' %}">Назад</a>
+    <br><br><br><br>
+{% endblock %}

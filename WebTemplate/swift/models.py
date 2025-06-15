@@ -13,5 +13,6 @@ class DevicesDB(models.Model):
 
 
 class SwiftNotificationSettings(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     device = models.ForeignKey(DevicesDB, on_delete=models.CASCADE)
-    status = models.BooleanField(default=True)
+    notification_types = models.JSONField(default=list)

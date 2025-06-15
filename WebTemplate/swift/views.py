@@ -1,24 +1,17 @@
-from django.http import JsonResponse, HttpResponse
-from django.shortcuts import render, get_object_or_404
-import json, requests
-from itertools import chain
-from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth.models import User
+import json
+
 from django.contrib.auth import authenticate
-from django.core import serializers
-from rest_framework.response import Response
-from rest_framework.decorators import api_view
 from django.contrib.auth import logout
-from rest_framework import status
-from fcm_django.models import FCMDevice
-from firebase_admin.messaging import Message, Notification, MulticastMessage, send_each_for_multicast
-from dashboard_app.models import Dashboard, DashboardItem, DataSet, DashboardHeader
-from users.models import Organization, DashboardComments, DashboardItemComments
-from users.serializers import DashboardItemCommentsSerializer, DashboardCommentsSerializer
-from dashboard_app.serializers import DashboardHeaderSerializer, DashboardItemSerializer
 from django.forms.models import model_to_dict
+from django.http import JsonResponse, HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+from fcm_django.models import FCMDevice
+from firebase_admin.messaging import Message, Notification
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
 from .models import DevicesDB, SwiftNotificationSettings
-from .helpers import get_item_function
 
 
 @csrf_exempt

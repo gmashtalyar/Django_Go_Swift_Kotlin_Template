@@ -84,3 +84,22 @@ class BusinessModelComments(models.Model):
         verbose_name_plural = 'Обсуждение XXXXXXXX'
 
 
+class NotificationTypes(models.TextChoices):
+    type_1 = 'Тип 1', 'Тип 1'
+    type_2 = 'Тип 2', 'Тип 2'
+    type_3 = 'Тип 3', 'Тип 3'
+
+
+class WebNotifications(models.Model):
+    item = models.ForeignKey(BusinessLogicModel, on_delete=models.CASCADE)
+    is_new = models.BooleanField(default=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    notification_type = models.CharField(choices=NotificationTypes.choices, max_length=50, blank=False, null=False, default=NotificationTypes.type_1)
+
+
+class EmailNotificationSettings(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    notification_types = models.JSONField(default=list)
+
+    def __str__(self):
+        return f"{self.user.email}"

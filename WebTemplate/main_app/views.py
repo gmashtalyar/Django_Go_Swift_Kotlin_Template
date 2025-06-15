@@ -3,6 +3,7 @@ from .models import BusinessLogicModel
 from users.models import BusinessModelComments
 from users.forms import ItemCommentForm
 
+
 def index(request):
     return render(request, 'main/index.html', )
 

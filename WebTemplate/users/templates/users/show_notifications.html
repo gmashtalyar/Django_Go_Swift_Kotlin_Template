@@ -1,0 +1,116 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Оповещения{% endblock %}
+
+{% block content %}
+{% load humanize %}
+
+<style>
+    .mydiv{
+        display: none;
+    }
+</style>
+
+
+<h3>Лента оповещений</h3>
+<br>
+
+
+{% if notifications_count > 100 %}
+<a class="ui red button" href="{% url 'clear_notifications' %}">Прочитать все оповещения </a> <br><br>
+{% endif %}
+
+<button class="ui inverted secondary button" onclick="toggleDiv(1)">Оповещения ХХХХХХ {{notifications_count}}</button>
+<button class="ui inverted secondary button" onclick="toggleDiv(2)">Оповещения №2№2№2№2 {{notifications_count}}</button>
+
+
+<div id="div1" class="mydiv">
+<br>
+<h4 class="ui horizontal divider header"><i class="comment alternate outline icon"></i>Оповещения ХХХХХХ</h4>
+<div class="ui feed">
+  {% for notification in notifications %}
+  <div class="event">
+    <div class="content">
+      <div class="summary">
+        <a class="user" href="{% url 'some_item' notification.id %}">{{notification.item}}</a> something happened
+      </div>
+      <div class="extra text">
+
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<h4 class="ui horizontal divider header"><i class="comment alternate outline icon"></i>Оповещения ХХХХХХ</h4>
+<div class="ui feed">
+  {% for old_notification in old_notifications %}
+  <div class="event">
+    <div class="content">
+      <div class="summary">
+        <a class="user" href="{% url 'some_item' old_notification.id %}">{{old_notification.item}}</a> something happened
+      </div>
+      <div class="extra text">
+
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+</div>
+
+
+<div id="div2" class="mydiv">
+<br>
+<h4 class="ui horizontal divider header"><i class="comment alternate outline icon"></i>Оповещения ХХХХХХ</h4>
+<div class="ui feed">
+  {% for notification in notifications %}
+  <div class="event">
+    <div class="content">
+      <div class="summary">
+        <a class="user" href="{% url 'some_item' notification.id %}">{{notification.item}}</a> something happened
+      </div>
+      <div class="extra text">
+
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<h4 class="ui horizontal divider header"><i class="comment alternate outline icon"></i>Оповещения ХХХХХХ</h4>
+<div class="ui feed">
+  {% for old_notification in old_notifications %}
+  <div class="event">
+    <div class="content">
+      <div class="summary">
+        <a class="user" href="{% url 'some_item' old_notification.id %}">{{old_notification.item}}</a> something happened
+      </div>
+      <div class="extra text">
+
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+</div>
+
+
+<script>
+    var divs = document.getElementsByClassName("mydiv");
+    divs[0].style.display = "block";
+
+    function toggleDiv(divNumber) {
+        for (var i = 0; i < divs.length; i++) {
+            if (i === divNumber - 1) {
+                divs[i].style.display = "block";
+            } else {
+                divs[i].style.display = "none";
+            }
+        }
+    }
+</script>
+<br><br>
+
+{% endblock %}

@@ -1,26 +1,29 @@
-from django.http import HttpResponse, HttpResponseRedirect, FileResponse, Http404
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.models import Group
-from django.views.decorators.csrf import csrf_exempt
-from .forms import SignUpForm, LoginForm, UserDataChangeForm, OrgCreationForm, AddUserForm, DemoForm, TariffForm, \
-    FeedbackCommentsForm
-from .models import Organization, TariffModel, PaymentHistory
-from .helpers import payment_helper, check_payment
+import json
+import os
+
+from django.contrib import messages
 from django.contrib.auth import login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import Group
 from django.contrib.auth.models import User
 from django.contrib.auth.tokens import default_token_generator
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.utils.encoding import force_bytes, force_str
-from django.template.loader import render_to_string
-from WebTemplate import settings
-from django.contrib import messages
-from django.core.mail import send_mail
-from django.contrib.auth.decorators import login_required
-from django.urls import reverse
-from .decorators import allowed_users, organization_payment_required
-import json, os
 from django.core.files.base import ContentFile
+from django.core.mail import send_mail
+from django.http import HttpResponse, HttpResponseRedirect, FileResponse, Http404
+from django.shortcuts import render, redirect, get_object_or_404
+from django.template.loader import render_to_string
+from django.urls import reverse
+from django.utils.encoding import force_bytes, force_str
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.views.decorators.csrf import csrf_exempt
+
 from main_app.models import BusinessLogic
+from WebTemplate import settings
+from .decorators import allowed_users, organization_payment_required
+from .forms import SignUpForm, LoginForm, UserDataChangeForm, OrgCreationForm, AddUserForm, DemoForm, TariffForm, \
+    FeedbackCommentsForm, NotificationsForm
+from .helpers import payment_helper, check_payment
+from .models import Organization, TariffModel, PaymentHistory, EmailNotificationSettings, WebNotifications
 
 
 @csrf_exempt
@@ -326,3 +329,43 @@ def download_android_app(request):
     response = HttpResponse(file_content, content_type='application/vnd.android.package-archive')
     response['Content-Disposition'] = f'attachment; filename="app.apk"'
     return response
+
+
+@login_required
+def notification_preferences(request):
+    settings, created = EmailNotificationSettings.objects.get_or_create(user=request.user)
+    if request.method == "POST":
+        form = NotificationsForm(request.POST, instance=settings)
+        if form.is_valid():
+            obj = form.save(commit=False)
+            obj.user = request.user
+            obj.save()
+            return HttpResponseRedirect("/")
+    else:
+        form = NotificationsForm(instance=settings)
+    return render(request, "users/notification_preferences.html", {"form": form, "email": request.user.email})
+
+
+@login_required()  # todo: test ()
+def user_settings(request):
+    user = User.objects.get(id=request.user.id)
+    try:
+        preferences = EmailNotificationSettings.objects.get(user_id=request.user.id)
+    except:
+        preferences = "no_preferences"
+    return render(request, 'main/settings.html', {'user': user, "preferences": preferences})
+
+
+@login_required
+def show_notifications(request):
+    notifications = WebNotifications.objects.filter(is_new=True, user_id=request.user.id)
+    notifications_count = notifications.count()
+
+    context = {"notifications": notifications, "notifications_count": notifications_count}
+    return render(request, 'user/show_notifications.html', context)
+
+
+@login_required
+def clear_notifications(request):
+    WebNotifications.objects.filter(user=request.user.id).update(is_new=False)
+    return HttpResponseRedirect("accounts/show-notifications/")

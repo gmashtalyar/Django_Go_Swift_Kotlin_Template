@@ -1,6 +1,6 @@
 from yookassa import Payment, Configuration
 import uuid
-from .models import PaymentHistory, Organization
+from .models import PaymentHistory, Organization, WebNotification
 
 
 def payment_helper(request, total_price):
@@ -37,3 +37,17 @@ def check_payment(payment_history: PaymentHistory) -> bool:
         return True
     else:
         return False
+
+
+def close_item_notifications(arg1, arg2=None):
+    if arg2 is None:
+        if isinstance(arg1, int):  # Only pk is provided
+            filters = {'item_id': arg1}
+        else:  # Only user is provided
+            filters = {'user_id': arg1}
+    else:
+        filters = {'user_id': arg1, 'item_id': arg2}
+    WebNotification.objects.filter(**filters).update(is_new=False)
+
+
+

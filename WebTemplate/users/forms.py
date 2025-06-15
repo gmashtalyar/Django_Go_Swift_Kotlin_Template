@@ -2,7 +2,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, User
 from django.contrib.auth.models import User
 from django import forms
 from django.contrib.auth.models import Group
-from .models import Organization, Demo, TariffModel, FeedbackComments, BusinessModelComments
+from .models import Organization, Demo, TariffModel, FeedbackComments, BusinessModelComments, EmailNotificationSettings, NotificationTypes
 from django.core.exceptions import ValidationError
 
 
@@ -127,3 +127,18 @@ class ItemCommentForm(forms.ModelForm):
         labels = {'comment': "Новый комментарий"}
         model = BusinessModelComments
         fields = ['comment']
+
+
+class NotificationsForm(forms.ModelForm):
+    notification_types = forms.MultipleChoiceField(choices=[], widget=forms.CheckboxSelectMultiple, required=False, label="Оповещения")
+
+    class Meta:
+        model = EmailNotificationSettings
+        fields = ['notification_types',]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['notification_types'].choices = [(type.label, type.label) for type in NotificationTypes.choices]
+
+    def clean_status_notifications(self):
+        return self.cleaned_data.get('status_notifications', [])
