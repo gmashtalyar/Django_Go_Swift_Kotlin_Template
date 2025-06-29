@@ -7,26 +7,38 @@ MEDIA_URL = '/Documents/'
 MEDIA_ROOT = os.path.join(BASE_DIR_docs, "Documents")
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+LOG_DIR = os.path.join(BASE_DIR, 'Documents', 'logs')
+os.makedirs(LOG_DIR, exist_ok=True)
 
-SECRET_KEY = os.environ['django_key']
+
+SECRET_KEY = os.environ.get('django_key')
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']
+# ALLOWED_HOSTS = ['*']
+
 # CSRF_TRUSTED_ORIGINS = []
 
 
 INSTALLED_APPS = [
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
+    'django_filters',
+    'django_tables2',
+    'bootstrap4',
+    'import_export',
+    'rest_framework',
+    'fcm_django'
     'users',
     'swift',
     'main_app',
-    'fcm_django'
 ]
 
 ASGI_APPLICATION = "WebTemplate.asgi.application"
@@ -101,9 +113,6 @@ if 'test' in sys.argv:
     }
 
 
-# Password validation
-# https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     # {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',},
     # {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',},
@@ -120,6 +129,7 @@ USE_TZ = True
 
 CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL")
 CELERY_RESULT_BACKEND = os.environ.get("CELERY_RESULT_BACKEND")
+
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 

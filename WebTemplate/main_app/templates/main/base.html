@@ -2,8 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta name="format-detection" content="telephone=no">
 
     <meta name="yandex-verification" content="" />
@@ -16,10 +15,14 @@
     <meta name="description" content="{% block description %}{% endblock %}">
     <meta name="keywords" content="{% block keywords %}{% endblock %}">
 
+    <link rel="stylesheet" href="{% static 'base.css' %}">
+    <script src="{% static 'base.js' %}"></script>
+
     <link rel="icon" type="image/x-icon" href="{% static '../Documents/my_favicon.ico' %}"/>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.5.0/dist/semantic.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"/>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.7.8/dist/vue.js"></script>
@@ -47,41 +50,77 @@
 
 
 <body style="background-color: #fafafc;">
-<div class="d-flex flex-column flex-md-row align-items-center pb-3 mb-4 border-bottom" style="padding-inline: 20px;">
-      <a href="/" class="d-flex align-items-center text-dark text-decoration-none">
-          <img src="{% static '../Documents/soft_logo.png' %}" style="width: 100px; height: auto;"/>
-          <span class="fs-4" style="padding-left: 10px;">XXXXXXXXXXXX</span>
-      </a>
 
-      <nav class="d-inline-flex mt-2 mt-md-0 ms-md-auto pl-md-4">
-          <a class="me-3 py-2 text-dark text-decoration-none" href="{% url 'feedback' %}">Обратная связь</a>
-          <a class="me-3 py-2 text-dark text-decoration-none" href="{% url 'cabinet-office' %}">Демо версия</a>
-          <a class="me-3 py-2 text-dark text-decoration-none" href="{% url 'users:demo-booking' %}">Запись на демо</a>
-          <a class="me-3 py-2 text-dark text-decoration-none" href="{% url 'users:tariff-plan' %}">Тарифный план</a>
+<header class="bg-white shadow-sm">
+  <div class="container mx-auto px-4 py-4">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center">
+        <a href="/" class="flex items-center">
+          <img src="{% static 'soft_logo.png' %}" alt="Логотип ХХХХХ" class="h-8 w-auto"/>
+          <span class="ml-3 text-lg font-semibold text-gray-800">ХХХХХ</span>
+        </a>
+      </div>
+
+      <nav class="hidden md:block">
+        <ul class="flex space-x-6">
+
+          <li><a href="{% url 'users:feedback' %}" class="text-gray-600 hover:text-blue-600">Обратная связь</a></li>
+          <li><a href="ХХХХХ" class="text-gray-600 hover:text-blue-600">Демо версия</a></li>
+          <li><a href="{% url 'users:demo-booking' %}" class="text-gray-600 hover:text-blue-600">Запись на демо</a></li>
+          <li><a href="{% url 'users:tariff-plan' %}" class="text-gray-600 hover:text-blue-600">Тарифный план</a></li>
+          {% if user.is_authenticated %}
+          {% load auth_extras %}
+          <li><a href="{% url 'users:logout' %}" class="text-gray-600 hover:text-blue-600">Выход</a></li>
+          {% csrf_token %}
+          {% else %}
+          <li><a href="{% url 'users:login' %}" class="text-gray-600 hover:text-blue-600 font-medium">Вход</a></li>
+          <li><a href="{% url 'users:signup' %}" class="text-gray-600 hover:text-blue-600 font-medium">Регистрация</a></li>
+          {% endif %}
+        </ul>
+      </nav>
+
+      <button id="mobile-menu-button" class="inline-flex items-center justify-center rounded-md p-2 text-gray-600 hover:bg-gray-100 hover:text-gray-800 md:hidden">
+        <svg xmlns="http://www.w3.org/2000/svg" class="menu-icon" viewBox="0 0 24 24">
+          <path d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" class="x-icon" viewBox="0 0 24 24">
+          <path d="M18 6L6 18M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+
+    <div id="mobile-menu" class="mt-4 hidden md:hidden">
+      <div class="border-t border-gray-200 pt-4">
+        <nav class="flex flex-col space-y-4">
+          <a href="{% url 'users:feedback' %}" class="text-gray-600 hover:text-blue-600">Обратная связь</a>
+          <a href="ХХХХХ" class="text-gray-600 hover:text-blue-600">Демо версия</a>
+          <a href="{% url 'users:demo-booking' %}" class="text-gray-600 hover:text-blue-600">Запись на демо</a>
+          <a href="{% url 'users:tariff-plan' %}" class="text-gray-600 hover:text-blue-600">Тарифный план</a>
 
           {% if user.is_authenticated %}
           {% load auth_extras %}
-          <a class="me-3 py-2 text-dark text-decoration-none" href="{% url 'users:logout' %}">Выход</a>
+          <a href="{% url 'users:logout' %}" class="text-gray-600 hover:text-blue-600">Выход</a>
           {% csrf_token %}
           {% else %}
-          <a class="me-3 py-2 text-dark text-decoration-none" href="{% url 'users:login' %}">Вход</a>
-          <a class="me-3 py-2 text-dark text-decoration-none" href="{% url 'users:signup' %}">Регистрация</a>
+          <a href="{% url 'users:login' %}" class="text-gray-600 hover:text-blue-600">Вход</a>
+          <a href="{% url 'users:signup' %}" class="text-gray-600 hover:text-blue-600 font-medium">Регистрация</a>
           {% endif %}
+        </nav>
+      </div>
+    </div>
+  </div>
+</header>
 
-      </nav>
-</div>
+
+
+
 
 <div class="container">{% block content %} {% endblock %}</div>
 
 
 <a href="https://t.me/FinTechDocs"><img src="{% static '../Documents/support-chat-button.png' %}" id="fixedbutton" width="75" height="75"></a>
-<style>
-#fixedbutton {
-    position: fixed;
-    bottom: 10px;
-    right: 10px;
-}
-</style>
+
+
 
 </body>
 </html>

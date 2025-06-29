@@ -4,7 +4,10 @@ WebTemplate/.coverage
 WebTemplate/htmlcov/
 WebTemplate/Documents/
 WebTemplate/conf/
-WebTamplate/static/
+WebTamplate/static/admin/
+WebTamplate/static/django_tables2/
+WebTamplate/static/rest_framework/
+WebTamplate/Documents/logs/*
 WebTamplate/.DS_Store
 .DS_Store
 .idea/
