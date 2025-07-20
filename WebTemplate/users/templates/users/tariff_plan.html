@@ -7,64 +7,207 @@
 
 
 
-<table class="ui celled table">
-  <thead>
-    <tr>
-        <th colspan="4" style="text-align: center;">Тарифный план</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><b>Тариф</b></td>
-      <td><b>В месяц</b></td>
-      <td><b>За 1 год</b></td>
-      <td><b>За 2 года</b></td>
-    </tr>
-    <tr>
-      <td>До 5 пользователей</td>
-      <td>Бесплатно</td>
-      <td>Бесплатно</td>
-      <td>Бесплатно</td>
-    </tr>
-    <tr>
-      <td>До 50 пользователей</td>
-      <td>219 руб за пользователя</td>
-      <td>199 руб за пользователя</td>
-      <td>169 руб за пользователя</td>
-    </tr>
-    <tr>
-      <td>До 100 пользователей</td>
-      <td>209 руб за пользователя</td>
-      <td>189 руб за пользователя</td>
-      <td>159 руб за пользователя</td>
-    </tr>
-    <tr>
-      <td>До 250 пользователей</td>
-      <td>199 руб за пользователя</td>
-      <td>179 руб за пользователя</td>
-      <td>149 руб за пользователя</td>
-    </tr>
-    <tr>
-      <td>До 500 пользователей</td>
-      <td>189 руб за пользователя</td>
-      <td>169 руб за пользователя</td>
-      <td>139 руб за пользователя</td>
-    </tr>
-    <tr>
-      <td>От 1000 пользователей</td>
-      <td>175 руб за пользователя</td>
-      <td>150 руб за пользователя</td>
-      <td>100 руб за пользователя</td>
-    </tr>
-  </tbody>
-</table>
-
-<br><br><br>
 <div class="row">
-  <div class="d-flex justify-content-center">
-      <a href="{% url 'users:choose-tariff-page' %}" class="btn btn-dark btn-lg px-4 me-md-2 fw-bold">Выбрать тариф</a>
-  </div>
+<div class="col-1"></div>
+<div class="col-md-10 col-12">
+<div class="ui raised very padded segment">
+
+
+<div class="pricing-header p-3 pb-md-4 mx-auto text-center">
+      <h1 class="display-4 fw-normal text-body-emphasis">Тарифный план</h1>
+      <br>
+      <p class="fs-5 text-body-secondary">Выберите идеальный тарифный план для вашего бизнеса.
+          Все тарифы включают полный доступ к функциям нашей платформы. По индивидуальным тарифам просим связаться с помощью формы обратной связи.</p>
 </div>
+
+<br><br>
+
+<div class="row justify-content-center">
+    <div class="col-12 col-md-6 col-lg-4">
+        <div class="ui container" >
+          <div class="ui three item menu mb-3">
+            <a class="item active" data-plan="monthly">Месяц</a>
+            <a class="item" data-plan="annual">Год</a>
+            <a class="item" data-plan="two-years">2 года</a>
+          </div>
+        </div>
+    </div>
+</div>
+
+<br><br>
+
+
+<div class="scroll-container d-flex flex-row overflow-x-auto mb-3" style="-ms-overflow-style: none; scrollbar-width: none;">
+
+
+<div class="col px-3">
+<div class="card mb-4 rounded-3 shadow-sm" style="width: 18rem;">
+    <div class="card-header py-3 text-center"><h4 class="text-xl font-semibold">До 5 пользователей</h4></div>
+    <div class="card-body">
+    <h1 class="text-3xl font-bold">Бесплатно</h1>
+    <br><br>
+      <ul class="list-unstyled mt-3 mb-4">
+        <li class="flex items-center justify-start whitespace-nowrap"><i class="check icon"></i>Полный доступ к приложению</li>
+        <li class="flex items-center justify-start whitespace-nowrap"><i class="check icon"></i>Консультации по приложению</li>
+      </ul>
+        <br><br><br>
+    <a href="{% url 'users:choose-tariff-page' %}" class="w-100 btn btn-lg btn-outline-dark">Выбрать тариф</a>
+    </div>
+</div>
+</div>
+
+<div class="col px-3">
+<div class="card mb-4 rounded-3 shadow-sm" style="width: 18rem;">
+    <div class="card-header py-3 text-center"><h4 class="text-xl font-semibold">До 50 пользователей</h4></div>
+    <div class="card-body">
+    <h1 class="text-3xl font-bold pricing-card-title" data-monthly="219 ₽" data-annual="199 ₽" data-two-years="169 ₽">
+        219 ₽<small class="text-body-secondary fw-light">/мес за пользователя</small></h1>
+          <p class="mt-2 inline-block bg-green-100 text-green-800 text-sm px-2 py-1 rounded pricing-discount"
+             data-monthly="" data-annual="Скидка 9%" data-two-years="Скидка 23%" style="display: none;"></p>
+
+      <ul class="list-unstyled mt-3 mb-4">
+        <li class="flex items-center justify-start whitespace-nowrap"><i class="check icon"></i>Полный доступ к приложению</li>
+        <li class="flex items-center justify-start whitespace-nowrap"><i class="check icon"></i>Поддержка 24/7</li>
+        <li class="flex items-center justify-start whitespace-nowrap"><i class="check icon"></i>Постоянные обновления</li>
+      </ul>
+        <br><br><br>
+    <a href="{% url 'users:choose-tariff-page' %}" class="w-100 btn btn-lg btn-outline-dark">Выбрать тариф</a>
+    </div>
+</div>
+</div>
+
+
+<div class="col px-3">
+<div class="card mb-4 rounded-3 shadow-sm" style="width: 18rem;">
+    <div class="card-header py-3 text-center"><h4 class="text-xl font-semibold">До 100 пользователей</h4></div>
+    <div class="card-body">
+    <h1 class="text-3xl font-bold pricing-card-title" data-monthly="209 ₽" data-annual="189 ₽" data-two-years="159 ₽">
+        209 ₽<small class="text-body-secondary fw-light">/мес за пользователя</small></h1>
+          <p class="mt-2 inline-block bg-green-100 text-green-800 text-sm px-2 py-1 rounded pricing-discount"
+             data-monthly="" data-annual="Скидка 10%" data-two-years="Скидка 24%" style="display: none;"></p>
+
+      <ul class="list-unstyled mt-3 mb-4">
+        <li class="flex items-center justify-start whitespace-nowrap"><i class="check icon"></i>Полный доступ к приложению</li>
+        <li class="flex items-center justify-start whitespace-nowrap"><i class="check icon"></i>Поддержка 24/7</li>
+        <li class="flex items-center justify-start whitespace-nowrap"><i class="check icon"></i>Постоянные обновления</li>
+      </ul>
+        <br><br><br>
+    <a href="{% url 'users:choose-tariff-page' %}" class="w-100 btn btn-lg btn-outline-dark">Выбрать тариф</a>
+    </div>
+</div>
+</div>
+
+
+<div class="col px-3">
+<div class="card mb-4 rounded-3 shadow-sm" style="width: 18rem;">
+    <div class="card-header py-3 text-center"><h4 class="text-xl font-semibold">До 250 пользователей</h4></div>
+    <div class="card-body">
+    <h1 class="text-3xl font-bold pricing-card-title" data-monthly="199 ₽" data-annual="179 ₽" data-two-years="149 ₽">
+        199 ₽<small class="text-body-secondary fw-light">/мес за пользователя</small></h1>
+          <p class="mt-2 inline-block bg-green-100 text-green-800 text-sm px-2 py-1 rounded pricing-discount"
+             data-monthly="" data-annual="Скидка 10%" data-two-years="Скидка 25%" style="display: none;"></p>
+
+      <ul class="list-unstyled mt-3 mb-4">
+        <li class="flex items-center justify-start whitespace-nowrap"><i class="check icon"></i>Полный доступ к приложению</li>
+        <li class="flex items-center justify-start whitespace-nowrap"><i class="check icon"></i>Поддержка 24/7</li>
+        <li class="flex items-center justify-start whitespace-nowrap"><i class="check icon"></i>Постоянные обновления</li>
+        <li class="flex items-center justify-start whitespace-nowrap"><i class="check icon"></i>Индивидуальные доработки</li>
+      </ul>
+        <br><br>
+    <a href="{% url 'users:choose-tariff-page' %}" class="w-100 btn btn-lg btn-outline-dark">Выбрать тариф</a>
+    </div>
+</div>
+</div>
+
+
+<div class="col px-3">
+<div class="card mb-4 rounded-3 shadow-sm" style="width: 18rem;">
+    <div class="card-header py-3 text-center"><h4 class="text-xl font-semibold">До 500 пользователей</h4></div>
+    <div class="card-body">
+    <h1 class="text-3xl font-bold pricing-card-title" data-monthly="189 ₽" data-annual="169 ₽" data-two-years="139 ₽">
+        189 ₽<small class="text-body-secondary fw-light">/мес за пользователя</small></h1>
+          <p class="mt-2 inline-block bg-green-100 text-green-800 text-sm px-2 py-1 rounded pricing-discount"
+             data-monthly="" data-annual="Скидка 12%" data-two-years="Скидка 26%" style="display: none;"></p>
+
+      <ul class="list-unstyled mt-3 mb-4">
+        <li class="flex items-center justify-start whitespace-nowrap"><i class="check icon"></i>Полный доступ к приложению</li>
+        <li class="flex items-center justify-start whitespace-nowrap"><i class="check icon"></i>Поддержка 24/7</li>
+        <li class="flex items-center justify-start whitespace-nowrap"><i class="check icon"></i>Постоянные обновления</li>
+        <li class="flex items-center justify-start whitespace-nowrap"><i class="check icon"></i>Индивидуальные доработки</li>
+      </ul>
+        <br><br>
+    <a href="{% url 'users:choose-tariff-page' %}" class="w-100 btn btn-lg btn-outline-dark">Выбрать тариф</a>
+    </div>
+</div>
+</div>
+
+
+<div class="col px-3">
+<div class="card mb-4 rounded-3 shadow-sm" style="width: 18rem;">
+    <div class="card-header py-3 text-center"><h4 class="text-xl font-semibold">До 1 000 пользователей</h4></div>
+    <div class="card-body">
+    <h1 class="text-3xl font-bold pricing-card-title" data-monthly="175 ₽" data-annual="150 ₽" data-two-years="100 ₽">
+        175 ₽<small class="text-body-secondary fw-light">/мес за пользователя</small></h1>
+          <p class="mt-2 inline-block bg-green-100 text-green-800 text-sm px-2 py-1 rounded pricing-discount"
+             data-monthly="" data-annual="Скидка 14%" data-two-years="Скидка 41%" style="display: none;"></p>
+
+      <ul class="list-unstyled mt-3 mb-4">
+        <li class="flex items-center justify-start whitespace-nowrap"><i class="check icon"></i>Полный доступ к приложению</li>
+        <li class="flex items-center justify-start whitespace-nowrap"><i class="check icon"></i>Поддержка 24/7</li>
+        <li class="flex items-center justify-start whitespace-nowrap"><i class="check icon"></i>Постоянные обновления</li>
+        <li class="flex items-center justify-start whitespace-nowrap"><i class="check icon"></i>Индивидуальные доработки</li>
+        <li class="flex items-center justify-start whitespace-nowrap"><i class="check icon"></i>Сложные интеграции</li>
+        <li class="flex items-center justify-start whitespace-nowrap"><i class="check icon"></i>Корпоративный it compliance</li>
+
+      </ul>
+
+    <a href="{% url 'users:choose-tariff-page' %}" class="w-100 btn btn-lg btn-outline-dark">Выбрать тариф</a>
+    </div>
+</div>
+</div>
+
+
+
+
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const menuItems = document.querySelectorAll('.ui.menu .item');
+    const priceElements = document.querySelectorAll('.pricing-card-title');
+    const discountElements = document.querySelectorAll('.pricing-discount');
+
+    menuItems.forEach(item => {
+        item.addEventListener('click', function() {
+            menuItems.forEach(i => i.classList.remove('active'));
+            this.classList.add('active');
+
+            const plan = this.getAttribute('data-plan');
+            const period = plan === 'monthly' ? '/мес' : plan === 'annual' ? '/год' : '/2 года';
+
+            priceElements.forEach(priceElement => {
+                const price = priceElement.getAttribute(`data-${plan}`);
+                priceElement.innerHTML = `${price}<small class="text-body-secondary fw-light">${period}</small>`;
+            });
+
+            discountElements.forEach(discountElement => {
+                const discount = discountElement.getAttribute(`data-${plan}`);
+                if (discount) {
+                    discountElement.textContent = discount;
+                    discountElement.style.display = 'inline-block';
+                } else {
+                    discountElement.style.display = 'none';
+                }
+            });
+        });
+    });
+});
+</script>
+
+
+  <br><br><br><br>
+</div></div></div>
+
+
 
 <br><br><br><br>
 
