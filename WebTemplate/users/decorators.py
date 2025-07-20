@@ -20,6 +20,8 @@ def allowed_users(allowed_roles=[]):
 def organization_payment_required(view_func):
     def _wrapped_view(request, *args, **kwargs):
         from .models import Organization
+        if not request.user.is_authenticated:
+            return redirect('users:org-registration-process-info')
         try:
             organization = Organization.objects.get(user=request.user)
             if not organization.payment:
