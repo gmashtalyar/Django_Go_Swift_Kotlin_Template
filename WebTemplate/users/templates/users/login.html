@@ -8,36 +8,51 @@
 <br><br>
 
 <div class="row">
-<div class="col-1"></div>
-<div class="col-md-10 col-12">
+<div class="col-md-3 col-1"></div>
+<div class="col-md-6 col-10">
 <div class="ui raised very padded segment">
 
-<div class="container">
-    <div class="col-sm-6">
-        <div class="panel-heading h2">Вход</div>
-        <br>
-        <div class="panel-body">
-            <form action="{% url 'users:login' %}" method="post">
-                {% csrf_token %} {{ form.as_p }}
-                <input type="submit" class="btn btn-dark" value="Войти"/>
-                <br>
-                <br>
-                <a href="{% url 'users:password-reset-request' %}">Восстановление пароля</a>
-            </form>
-        </div>
-    </div>
-</div>
 
+<div class="container">
+
+            <div class="text-center mb-5">
+                <h1 class="ui header">Добро пожаловать</h1><p class="text-muted">Войдите в свой аккаунт, чтобы продолжить</p>
+            </div>
+
+            <form class="ui form" action="{% url 'users:login' %}" method="post">
+                {% csrf_token %}
+
+                <div class="field">
+                    <label>Имя пользователя</label>
+                    <div class="ui left icon input">
+                        <i class="user icon"></i>
+                      {{ form.username }}
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label>Пароль</label>
+                    <div class="ui left icon input">
+                        <i class="lock icon"></i>
+                        {{ form.password }}
+                    </div>
+                </div>
+
+
+              <br>
+                <div class="field" style="display: flex; justify-content: space-between; align-items: center;">
+                    <a href="{% url 'users:password-reset-request' %}" style="color: black;">Восстановление пароля</a>
+                </div>
+
+                <button type="submit" class="ui fluid large black submit button">Вход</button>
+            </form>
+
+            <div class="ui message text-center mt-4"><a href="{% url 'users:signup' %}" style="color: black;">Регистрация</a></div>
+
+</div>
 
 <br><br><br><br>
 </div></div></div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var labelElement = document.querySelector('label[for="id_password"]');
-        if (labelElement) {
-            labelElement.innerText = 'Пароль:';
-        }
-    });
-</script>
+
 {% endblock %}
