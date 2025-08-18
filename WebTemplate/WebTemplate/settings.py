@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'users',
     'swift',
     'main_app',
+    'llm_app'
 ]
 
 ASGI_APPLICATION = "WebTemplate.asgi.application"
