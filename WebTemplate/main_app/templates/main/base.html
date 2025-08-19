@@ -61,24 +61,40 @@
         </a>
       </div>
 
-      <nav class="hidden md:block">
-        <ul class="flex space-x-6">
+        <div class="header-right">
+            <div class="header-top">
+                <nav class="hidden md:block">
+                <ul class="flex justify-end space-x-6">
+                    <li><a href="tel:+79169798743" class="text-gray-600 hover:text-blue-600">+7 916 979 8743</a></li>
+                    <li><a href="mailto:info@fintechdocs.ru" class="text-gray-600 hover:text-blue-600"><i class="envelope outline icon"></i></a></li>
+                    <li><a href="https://t.me/FinTechDocs"><i class="telegram plane icon"></i></a></li>
+                    <li><a href="{% url 'users:feedback' %}" class="text-gray-600 hover:text-blue-600">Обратная связь</a></li>
+                </ul>
+              </nav>
+            </div>
 
-          <li><a href="{% url 'users:feedback' %}" class="text-gray-600 hover:text-blue-600">Обратная связь</a></li>
-          <li><a href="ХХХХХ" class="text-gray-600 hover:text-blue-600">Демо версия</a></li>
-          <li><a href="{% url 'users:demo-booking' %}" class="text-gray-600 hover:text-blue-600">Запись на демо</a></li>
-          <li><a href="{% url 'users:tariff-plan' %}" class="text-gray-600 hover:text-blue-600">Тарифный план</a></li>
-          {% if user.is_authenticated %}
-          {% load auth_extras %}
-          <li><a href="{% url 'users:logout' %}" class="text-gray-600 hover:text-blue-600">Выход</a></li>
-          {% csrf_token %}
-          {% else %}
-          <li><a href="{% url 'users:login' %}" class="text-gray-600 hover:text-blue-600 font-medium">Вход</a></li>
-          <li><a href="{% url 'users:signup' %}" class="text-gray-600 hover:text-blue-600 font-medium">Регистрация</a></li>
-          {% endif %}
-        </ul>
-      </nav>
+            <br>
+            <div class="header-bottom">
 
+              <nav class="hidden md:block">
+                <ul class="flex space-x-6">
+
+                  <li><a href="ХХХХХ" class="text-gray-600 hover:text-blue-600">Демо версия</a></li>
+                  <li><a href="{% url 'users:demo-booking' %}" class="text-gray-600 hover:text-blue-600">Запись на демо</a></li>
+                  <li><a href="{% url 'users:tariff-plan' %}" class="text-gray-600 hover:text-blue-600">Тарифный план</a></li>
+                  {% if user.is_authenticated %}
+                  {% load auth_extras %}
+                  <li><a href="{% url 'users:logout' %}" class="text-gray-600 hover:text-blue-600">Выход</a></li>
+                  {% csrf_token %}
+                  {% else %}
+                  <li><a href="{% url 'users:login' %}" class="text-gray-600 hover:text-blue-600 font-medium">Вход</a></li>
+                  <li><a href="{% url 'users:signup' %}" class="text-gray-600 hover:text-blue-600 font-medium">Регистрация</a></li>
+                  {% endif %}
+                </ul>
+              </nav>
+
+            </div>
+        </div>
       <button id="mobile-menu-button" class="inline-flex items-center justify-center rounded-md p-2 text-gray-600 hover:bg-gray-100 hover:text-gray-800 md:hidden">
         <svg xmlns="http://www.w3.org/2000/svg" class="menu-icon" viewBox="0 0 24 24">
           <path d="M4 6h16M4 12h16M4 18h16"></path>
@@ -92,6 +108,8 @@
     <div id="mobile-menu" class="mt-4 hidden md:hidden">
       <div class="border-t border-gray-200 pt-4">
         <nav class="flex flex-col space-y-4">
+          <a href="tel:+79169798743" class="text-gray-600 hover:text-blue-600">+7 916 979 8743</a>
+          <a href="mailto:info@fintechdocs.ru" class="flex items-center text-gray-600 hover:text-blue-600"><i class="envelope outline icon"></i> info@fintechdocs.ru</a>
           <a href="{% url 'users:feedback' %}" class="text-gray-600 hover:text-blue-600">Обратная связь</a>
           <a href="ХХХХХ" class="text-gray-600 hover:text-blue-600">Демо версия</a>
           <a href="{% url 'users:demo-booking' %}" class="text-gray-600 hover:text-blue-600">Запись на демо</a>
