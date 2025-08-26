@@ -7,29 +7,37 @@
 {% block content %}
 
 <br><br>
+<div class="row">
+<div class="col-md-3 col-1"></div>
+<div class="col-md-6 col-12">
+<div class="ui raised very padded segment">
+
 
 <div class="container">
-    <div class="col-sm-6">
-        <div class="panel-heading h2">Регистрация</div>
-        <br>
-        <div class="panel-body">
-            <form class="site-form" action="{% url 'users:signup' %}" method="post">
-                {% csrf_token %}
-                <div class="row"><div class="col-12">Логин:<br>{{form.username}}</div></div><br>
-                <div class="row"><div class="col-12">Имя:<br>{{form.first_name}}</div></div><br>
-                <div class="row"><div class="col-12">Фамилия:<br>{{form.last_name}}</div></div><br>
-                <div class="row"><div class="col-12">Рабочая почта:<br>{{form.email}}<div class="text-danger">{{ form.email.errors }}</div></div></div><br>
-                <div class="row"><div class="col-12">Пароль:<br>{{form.password1}}</div></div><br>
-                <div class="row"><div class="col-12">Подтверждение пароля:<br>{{form.password2}}</div></div><br>
-                <span class="helptext">Для подтверждения введите, пожалуйста, пароль ещё раз.</span><br><br>
 
-                <input type="submit" class="btn btn-dark" value="Регистрация"/>
-            </form>
+        <div class="text-center mb-5">
+            <h1 class="ui header">Создать аккаунт</h1><p class="text-muted">Заполните форму для регистрации</p>
         </div>
-    </div>
+
+
+        <form class="ui form" action="{% url 'users:signup' %}" method="post">
+            {% csrf_token %}
+
+            <div class="field"><label>Логин:</label><div class="ui left icon input"><i class="user icon"></i>{{form.username}}</div></div>
+            <div class="field"><label>Имя:</label><div class="ui left icon input"><i class="user icon"></i>{{form.first_name}}</div></div>
+            <div class="field"><label>Фамилия:</label><div class="ui left icon input"><i class="user icon"></i>{{form.last_name}}</div></div>
+            <div class="field"><label>Рабочая почта:</label><div class="ui left icon input"><i class="envelope icon"></i>{{form.email}}</div></div>
+            <div class="field"><label>Пароль:</label><div class="ui left icon input"><i class="lock icon"></i>{{form.password1}}</div></div>
+            <div class="field"><label>Подтверждение пароля:</label><div class="ui left icon input"><i class="lock icon"></i>{{form.password2}}</div></div>
+
+
+            <input type="submit" class="btn btn-dark" value="Регистрация"/>
+        </form>
+
 </div>
 
 <br><br><br><br>
+</div></div></div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
