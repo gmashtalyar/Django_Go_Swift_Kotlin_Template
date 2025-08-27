@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "XXXXXXX",
+    "project_id": "XXXXXXX",
+    "storage_bucket": "XXXXXXX.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:237217212893:android:XXXXXXX",
+        "android_client_info": {
+          "package_name": "XXXXXXX"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "XXXXXXX-d-XXXXXXX"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
