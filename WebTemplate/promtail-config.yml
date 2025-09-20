@@ -1,0 +1,26 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://79.174.81.36:3100/loki/api/v1/push
+#    batchsize: 102400   # 100 KB instead of default ~1MB
+#    batchwait: 2s
+    timeout: 30s
+
+scrape_configs:
+  - job_name: simpleboard
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: xxxxxxx_logs
+          __path__: /var/log/django_debug.log
+    pipeline_stages:
+      - regex:
+          expression: '.*'
+      - labels:
+          service: board

@@ -1,0 +1,100 @@
+version: '3.8'
+
+services:
+  template-app:
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    networks:
+      - template-network
+    volumes:
+      - static_volume:/app/static
+#      - ./Documents:/app/Documents
+#      - ./db.sqlite3:/app/db.sqlite3
+      - type: bind
+        source: ./db.sqlite3
+        target: /app/db.sqlite3
+      - type: bind
+        source: /home/django/django_venv/src/Documents
+        target: /app/Documents
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./conf/:/etc/nginx/
+      - ./conf/.htpasswd:/etc/nginx/.htpasswd
+      - static_volume:/static
+      - ./static:/app/static
+#      - ./certificates/template-app.crt:/etc/nginx/XXXXXXX-app.crt
+#      - ./certificates/template-app.key:/etc/nginx/XXXXXXX-app.key
+      - ./Documents:/app/Documents
+    ports:
+      - "443:443"
+      - "80:80"
+    networks:
+      - template-network
+    depends_on:
+      - template-app
+    restart: unless-stopped
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    networks:
+      - template-network
+    restart: unless-stopped
+    command: >
+      redis-server
+        --appendonly yes
+        --requirepass mysecret
+    healthcheck:
+      test: [ "CMD", "redis-cli", "-a", "mysecret", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  go_microservice:
+   build:
+     context: ./highload
+   ports:
+     - "8080:8080"
+   networks:
+     - board-network
+   depends_on:
+     - template_app
+     - nginx
+
+  promtail:
+    image: grafana/promtail:2.8.0
+    volumes:
+      - ./promtail-config.yml:/etc/promtail/config.yml
+      - /home/django/django_venv/src/Documents/logs:/var/log
+    command: -config.file=/etc/promtail/config.yml
+    networks:
+      - template-network
+    restart: unless-stopped
+
+  node-exporter:
+    image: prom/node-exporter:v1.7.0
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--path.rootfs=/rootfs'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    networks:
+      - template-network
+    restart: unless-stopped
+
+volumes:
+  static_volume:
+
+networks:
+  template-network:
+    driver: bridge
