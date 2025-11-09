@@ -1,6 +1,29 @@
 version: '3.8'
+x-environment-defaults: &environment-defaults
+  DB_NAME: "template_XXXX"
+  DB_USER: "template_XXXX"
+  DB_PASSWORD: "template_XXXX"
+  DB_HOST: "postgres"
+  DB_PORT: 5432
+  CELERY_BROKER_URL: redis://:mysecret@redis:6379/0
+  CELERY_RESULT_BACKEND: redis://:mysecret@redis:6379/0
 
 services:
+  postgres:
+    image: postgres:16.1-alpine3.19
+    container_name: postgres
+    environment:
+      POSTGRES_USER: template_XXXX
+      POSTGRES_PASSWORD: template_XXXX
+      POSTGRES_DB: template_XXXX
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    networks:
+      - template-network
+    restart: unless-stopped
+
   template-app:
     build:
       context: .
@@ -8,13 +31,17 @@ services:
       - "8000:8000"
     networks:
       - template-network
+    environment:
+      <<: *environment-defaults
+    depends_on:
+      - postgres
     volumes:
       - static_volume:/app/static
 #      - ./Documents:/app/Documents
 #      - ./db.sqlite3:/app/db.sqlite3
-      - type: bind
-        source: ./db.sqlite3
-        target: /app/db.sqlite3
+#      - type: bind
+#        source: ./db.sqlite3
+#        target: /app/db.sqlite3
       - type: bind
         source: /home/django/django_venv/src/Documents
         target: /app/Documents
@@ -27,8 +54,8 @@ services:
       - ./conf/.htpasswd:/etc/nginx/.htpasswd
       - static_volume:/static
       - ./static:/app/static
-#      - ./certificates/template-app.crt:/etc/nginx/XXXXXXX-app.crt
-#      - ./certificates/template-app.key:/etc/nginx/XXXXXXX-app.key
+      - ./certificates/template-app.crt:/etc/nginx/XXXXXXX-app.crt
+      - ./certificates/template-app.key:/etc/nginx/XXXXXXX-app.key
       - ./Documents:/app/Documents
     ports:
       - "443:443"
@@ -56,16 +83,64 @@ services:
       timeout: 5s
       retries: 5
 
+  celery:
+     build:
+       context: .
+     command: celery -A Board worker --loglevel=info
+     healthcheck:
+       test: [ "CMD", "celery", "-A", "template_app", "inspect", "ping" ]
+       interval: 30s
+       timeout: 10s
+       retries: 3
+     depends_on:
+       redis:
+         condition: service_healthy
+       postgres:
+         condition: service_started
+       secondary_postgres:
+         condition: service_started
+     networks:
+       - template-network
+     environment:
+       <<: *environment-defaults
+     volumes:
+      - type: bind
+        source: /home/django/django_venv/src/Documents
+        target: /app/Documents
+     restart: unless-stopped
+
+  celery-beat:
+     build:
+       context: .
+     command: celery -A Template beat --loglevel=info
+     depends_on:
+       - redis
+       - postgres
+       - secondary_postgres
+       - celery
+     networks:
+       - template-network
+     environment:
+       <<: *environment-defaults
+     volumes:
+      - type: bind
+        source: /home/django/django_venv/src/Documents
+        target: /app/Documents
+     restart: unless-stopped
+
   go_microservice:
    build:
      context: ./highload
+   environment:
+     <<: *environment-defaults
    ports:
      - "8080:8080"
    networks:
-     - board-network
+     - template-network
    depends_on:
      - template_app
      - nginx
+     - postgres
 
   promtail:
     image: grafana/promtail:2.8.0
@@ -93,6 +168,7 @@ services:
     restart: unless-stopped
 
 volumes:
+  pg_data:
   static_volume:
 
 networks:
