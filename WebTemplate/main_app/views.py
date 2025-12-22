@@ -1,20 +1,21 @@
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpRequest, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
+from typing import Any, Optional
 
 from .models import BusinessLogicModel
 from users.models import BusinessModelComments
 from users.forms import ItemCommentForm
-from llm_helper import get_llm_response
+from .llm_helper import get_llm_response
 import json
 
 
-def index(request):
+def index(request: HttpRequest) -> HttpResponse:
     return render(request, 'main/index.html', )
 
 
-def some_item(request, item_id):
+def some_item(request: HttpRequest, item_id: int) -> HttpResponse:
     item = get_object_or_404(BusinessLogicModel, id=item_id)
     item_comments = BusinessModelComments.objects.filter(item=item)
     if request.method == "POST":
@@ -32,17 +33,17 @@ def some_item(request, item_id):
 
 @csrf_exempt
 @require_http_methods(["POST"])
-def llm_response_view(request):
+def llm_response_view(request: HttpRequest) -> JsonResponse:
     try:
-        data = json.loads(request.body)
-        prompt = data.get('prompt')
-        system_message = data.get('system_message')
-        temperature = data.get('temperature', 0.0)
+        data: dict[str, Any] = json.loads(request.body)
+        prompt: Optional[str] = data.get('prompt')
+        system_message: Optional[str] = data.get('system_message')
+        temperature: float = data.get('temperature', 0.0)
 
         if not prompt:
             return JsonResponse({'error': 'prompt field is required'}, status=400)
 
-        response = get_llm_response(prompt=prompt, system_message=system_message, temperature=temperature)
+        response: str = get_llm_response(prompt=prompt, system_message=system_message, temperature=temperature)
 
         return JsonResponse({'success': True, 'response': response})
 
