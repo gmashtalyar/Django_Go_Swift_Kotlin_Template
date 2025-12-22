@@ -12,3 +12,13 @@ WebTamplate/.DS_Store
 .DS_Store
 .idea/
 WebTemplate/.DS_Store
+.env.local
+.env.*.local
+
+# Certificates
+WebTemplate/certificates/*.key
+WebTemplat/ecertificates/*.pem
+WebTemplate/!certificates/*.example
+
+# Auth files
+WebTemplate/conf/.htpasswd
