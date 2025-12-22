@@ -1,5 +1,6 @@
 import json
 import os
+from typing import Any, Dict, List, Optional, Union
 
 from django.contrib import messages
 from django.contrib.auth import login, logout
@@ -9,7 +10,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.tokens import default_token_generator
 from django.core.files.base import ContentFile
 from django.core.mail import send_mail
-from django.http import HttpResponse, HttpResponseRedirect, FileResponse, Http404
+from django.http import HttpResponse, HttpResponseRedirect, FileResponse, Http404, HttpRequest
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse
@@ -27,7 +28,7 @@ from .models import Organization, TariffModel, PaymentHistory, EmailNotification
 
 
 @csrf_exempt
-def signup_view(request):
+def signup_view(request: HttpRequest) -> HttpResponse:
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
@@ -39,7 +40,7 @@ def signup_view(request):
     return render(request, 'users/signup.html', {'form': form})
 
 
-def login_view(request):
+def login_view(request: HttpRequest) -> HttpResponse:
     if request.method == 'POST':
         form = LoginForm(data=request.POST)
         if form.is_valid():
@@ -51,12 +52,12 @@ def login_view(request):
     return render(request, 'users/login.html', {'form': form})
 
 
-def logout_view(request):
+def logout_view(request: HttpRequest) -> HttpResponse:
     logout(request)
     return redirect('/')
 
 
-def password_reset_request(request):
+def password_reset_request(request: HttpRequest) -> HttpResponse:
     if request.method == 'POST':
         email = request.POST['email'].lower()
         user = User.objects.filter(email=email).first()
@@ -76,10 +77,10 @@ def password_reset_request(request):
     return render(request, "users/reset_request.html")
 
 
-def password_reset_confirm(request, uidb64, token):
+def password_reset_confirm(request: HttpRequest, uidb64: str, token: str) -> HttpResponse:
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
-        user = User.objects.get(pk=uid)
+        user: Optional[User] = User.objects.get(pk=uid)
     except (TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
     if user is not None and default_token_generator.check_token(user, token):
@@ -96,7 +97,7 @@ def password_reset_confirm(request, uidb64, token):
 
 
 @login_required
-def change_user_data(request):
+def change_user_data(request: HttpRequest) -> HttpResponse:
     if request.method == 'POST':
         form = UserDataChangeForm(request.POST, instance=request.user)
         if form.is_valid():
@@ -108,7 +109,7 @@ def change_user_data(request):
 
 
 @login_required
-def organization_create(request):
+def organization_create(request: HttpRequest) -> HttpResponse:
     if request.method == "POST":
         form = OrgCreationForm(request.POST)
         if form.is_valid():
@@ -130,7 +131,7 @@ def organization_create(request):
 
 
 @allowed_users(allowed_roles=['org_admin'])
-def organization_add_users(request, org_id):
+def organization_add_users(request: HttpRequest, org_id: int) -> HttpResponse:
     org = Organization.objects.get(pk=org_id)
     user_emails = [user.email for user in User.objects.filter(email__endswith=org.corporate_email).exclude(pk=org.user_id)]
     if request.method == 'POST':
@@ -146,22 +147,22 @@ def organization_add_users(request, org_id):
 
 
 @allowed_users(allowed_roles=['org_admin'])
-def org_settings(request):
+def org_settings(request: HttpRequest) -> HttpResponse:
     org = Organization.objects.get(user_id=request.user.id)
     return render(request, 'users/org_settings.html', {"org": org})
 
 
 @login_required
-def company_properties(request):
+def company_properties(request: HttpRequest) -> HttpResponse:
     org = Organization.objects.get(user_id=request.user.id)
     users = Organization.objects.filter(org=org.org)
     return render(request, 'users/company_properties.html', {"org": org, "users": users})
 
 
 @login_required
-def cabinet(request):
+def cabinet(request: HttpRequest) -> HttpResponse:
     try:
-        org = Organization.objects.get(user_id=request.user.id)
+        org: Optional[Organization] = Organization.objects.get(user_id=request.user.id)
         user_organizations = Organization.objects.filter(user=request.user)
         dashboards = BusinessLogic.objects.filter(user__in=user_organizations.values('user'))
     except:
@@ -170,11 +171,11 @@ def cabinet(request):
     return render(request, 'users/cabinet.html', {"org": org, "dashboards": dashboards})
 
 
-def tariff_plan(request):
+def tariff_plan(request: HttpRequest) -> HttpResponse:
     return render(request, 'users/tariff_plan.html')
 
 
-def demo_booking(request):
+def demo_booking(request: HttpRequest) -> HttpResponse:
     if request.method == 'POST':
         form = DemoForm(request.POST)
         if form.is_valid():
@@ -185,20 +186,20 @@ def demo_booking(request):
     return render(request, 'users/demo_booking.html', {'form': form})
 
 
-def ask_signup(request):
+def ask_signup(request: HttpRequest) -> HttpResponse:
      return render(request, 'users/ask_signup.html')
 
 
-def payment_success_page(request):
+def payment_success_page(request: HttpRequest) -> HttpResponse:
     return render(request, 'users/payment_success_page.html')
 
 
-def org_registration_process_info(request):
+def org_registration_process_info(request: HttpRequest) -> HttpResponse:
     return render(request, 'users/org_registration_process_info.html')
 
 
 @organization_payment_required
-def choose_tariff_page(request):
+def choose_tariff_page(request: HttpRequest) -> HttpResponse:
     if request.method == "POST":
         form = TariffForm(request.POST)
         if form.is_valid():
@@ -231,7 +232,7 @@ def choose_tariff_page(request):
     return render(request, 'users/choose_tariff_page.html', {"form": form, "prices_json": json.dumps(prices)})
 
 
-def payment_return_page(request):
+def payment_return_page(request: HttpRequest) -> HttpResponse:
     payment_history = PaymentHistory.objects.filter(user=request.user).last()
     check = check_payment(payment_history)
     if check:
@@ -240,7 +241,7 @@ def payment_return_page(request):
         return render(request, 'users/payment_failure_page.html')
 
 
-def oferta(request):
+def oferta(request: HttpRequest) -> HttpResponse:
     file_path = os.path.join("Documents", 'oferta.pdf')
     if os.path.exists(file_path):
         response = FileResponse(open(file_path, 'rb'), content_type='application/pdf')
@@ -250,7 +251,7 @@ def oferta(request):
         raise Http404('The oferta policy file does not exist.')
 
 
-def privacy_policy(request):
+def privacy_policy(request: HttpRequest) -> HttpResponse:
     file_path = os.path.join("Documents", 'privacy_policy.pdf')
     if os.path.exists(file_path):
         response = FileResponse(open(file_path, 'rb'), content_type='application/pdf')
@@ -260,7 +261,7 @@ def privacy_policy(request):
         raise Http404('The privacy policy file does not exist.')
 
 
-def feedback(request):
+def feedback(request: HttpRequest) -> HttpResponse:
     if request.method == "POST":
         form = FeedbackCommentsForm(request.POST)
         if form.is_valid():
@@ -273,16 +274,16 @@ def feedback(request):
     return render(request, 'users/feedback.html', context)
 
 
-def error(request, exception=None, status_code=None):
+def error(request: HttpRequest, exception: Optional[Any] = None, status_code: Optional[int] = None) -> HttpResponse:
     return render(request, "users/error.html", status=404)
 
 
 @allowed_users(allowed_roles=['org_admin'])
-def user_management(request):
+def user_management(request: HttpRequest) -> HttpResponse:
     org = Organization.objects.get(user_id=request.user.id)
     user_organizations = Organization.objects.filter(org=org.org, corporate_email=org.corporate_email)
     if not user_organizations.exists():
-        processed_users = []
+        processed_users: List[Dict[str, Any]] = []
     else:
         user_ids = user_organizations.values_list('user_id', flat=True)
         users = User.objects.filter(id__in=user_ids).prefetch_related('groups')
@@ -297,7 +298,7 @@ def user_management(request):
 
 
 @allowed_users(allowed_roles=['org_admin'])
-def assign_group(request, user_id, group_name):
+def assign_group(request: HttpRequest, user_id: int, group_name: str) -> HttpResponse:
     user = get_object_or_404(User, id=user_id)
     group = Group.objects.get(name=group_name)
     if group not in user.groups.all():
@@ -306,7 +307,7 @@ def assign_group(request, user_id, group_name):
 
 
 @allowed_users(allowed_roles=['org_admin'])
-def remove_group(request, user_id, group_name):
+def remove_group(request: HttpRequest, user_id: int, group_name: str) -> HttpResponse:
     user = get_object_or_404(User, id=user_id)
     group = get_object_or_404(Group, name=group_name)
     if group in user.groups.all():
@@ -315,11 +316,11 @@ def remove_group(request, user_id, group_name):
 
 
 # @cache_page(60 * 60 * 24 * 7)
-def faq(request):
+def faq(request: HttpRequest) -> HttpResponse:
     return render(request, 'users/faq.html')
 
 
-def download_android_app(request):
+def download_android_app(request: HttpRequest) -> HttpResponse:
     file_path = "/app/Documents/app.apk"
     if not os.path.exists(file_path):
         raise Http404("File not found")
@@ -332,7 +333,7 @@ def download_android_app(request):
 
 
 @login_required
-def notification_preferences(request):
+def notification_preferences(request: HttpRequest) -> HttpResponse:
     settings, created = EmailNotificationSettings.objects.get_or_create(user=request.user)
     if request.method == "POST":
         form = NotificationsForm(request.POST, instance=settings)
@@ -347,17 +348,17 @@ def notification_preferences(request):
 
 
 @login_required()  # todo: test ()
-def user_settings(request):
+def user_settings(request: HttpRequest) -> HttpResponse:
     user = User.objects.get(id=request.user.id)
     try:
-        preferences = EmailNotificationSettings.objects.get(user_id=request.user.id)
+        preferences: Union[EmailNotificationSettings, str] = EmailNotificationSettings.objects.get(user_id=request.user.id)
     except:
         preferences = "no_preferences"
     return render(request, 'main/settings.html', {'user': user, "preferences": preferences})
 
 
 @login_required
-def show_notifications(request):
+def show_notifications(request: HttpRequest) -> HttpResponse:
     notifications = WebNotifications.objects.filter(is_new=True, user_id=request.user.id)
     notifications_count = notifications.count()
 
@@ -366,6 +367,6 @@ def show_notifications(request):
 
 
 @login_required
-def clear_notifications(request):
+def clear_notifications(request: HttpRequest) -> HttpResponse:
     WebNotifications.objects.filter(user=request.user.id).update(is_new=False)
     return HttpResponseRedirect("accounts/show-notifications/")
