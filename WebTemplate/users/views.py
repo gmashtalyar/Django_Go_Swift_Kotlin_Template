@@ -29,6 +29,19 @@ from .models import Organization, TariffModel, PaymentHistory, EmailNotification
 
 @csrf_exempt
 def signup_view(request: HttpRequest) -> HttpResponse:
+    """
+    Handles user registration.
+
+    If the request method is POST and the form is valid, a new user is created,
+    logged in, and redirected to the home page.
+    Otherwise, displays the sign-up form.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponse: The rendered sign-up page or a redirect to the home page.
+    """
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
@@ -41,6 +54,19 @@ def signup_view(request: HttpRequest) -> HttpResponse:
 
 
 def login_view(request: HttpRequest) -> HttpResponse:
+    """
+    Handles user authentication and login.
+
+    If the request method is POST and the form is valid, the user is authenticated,
+    logged in, and redirected to the home page.
+    Otherwise, displays the login form.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponse: The rendered login page or a redirect to the home page.
+    """
     if request.method == 'POST':
         form = LoginForm(data=request.POST)
         if form.is_valid():
@@ -53,11 +79,34 @@ def login_view(request: HttpRequest) -> HttpResponse:
 
 
 def logout_view(request: HttpRequest) -> HttpResponse:
+    """
+    Logs out the current user and redirects to the home page.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponse: A redirect to the home page.
+    """
     logout(request)
     return redirect('/')
 
 
 def password_reset_request(request: HttpRequest) -> HttpResponse:
+    """
+    Handles the request to reset a user's password.
+
+    If the request method is POST, verifies the email exists, generates a password reset
+    token, sends an email with the reset link, and displays a success message.
+    If the email is not found, displays an error message.
+    Otherwise, renders the password reset request form.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponse: The rendered password reset request page or a redirect.
+    """
     if request.method == 'POST':
         email = request.POST['email'].lower()
         user = User.objects.filter(email=email).first()
@@ -78,6 +127,21 @@ def password_reset_request(request: HttpRequest) -> HttpResponse:
 
 
 def password_reset_confirm(request: HttpRequest, uidb64: str, token: str) -> HttpResponse:
+    """
+    Handles the confirmation of a password reset.
+
+    Verifies the UID and token. If valid, allows the user to set a new password.
+    Upon successful password change, redirects to the login page with a success message.
+    If the link is invalid or expired, displays an error message.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+        uidb64 (str): The base64 encoded user ID.
+        token (str): The password reset token.
+
+    Returns:
+        HttpResponse: The rendered password reset confirmation page or a redirect.
+    """
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
         user: Optional[User] = User.objects.get(pk=uid)
@@ -98,6 +162,19 @@ def password_reset_confirm(request: HttpRequest, uidb64: str, token: str) -> Htt
 
 @login_required
 def change_user_data(request: HttpRequest) -> HttpResponse:
+    """
+    Allows a logged-in user to change their profile data.
+
+    If the request method is POST and the form is valid, updates the user's information
+    and redirects to the home page.
+    Otherwise, displays the user data change form pre-filled with current data.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponse: The rendered user data change page or a redirect.
+    """
     if request.method == 'POST':
         form = UserDataChangeForm(request.POST, instance=request.user)
         if form.is_valid():
@@ -110,6 +187,19 @@ def change_user_data(request: HttpRequest) -> HttpResponse:
 
 @login_required
 def organization_create(request: HttpRequest) -> HttpResponse:
+    """
+    Handles the creation of a new organization.
+
+    Validates that the user uses a corporate email and hasn't already created an organization.
+    If valid, creates the organization, assigns necessary groups to the user, and redirects
+    to the company properties page.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponse: The rendered organization creation page or a redirect.
+    """
     if request.method == "POST":
         form = OrgCreationForm(request.POST)
         if form.is_valid():
@@ -132,6 +222,19 @@ def organization_create(request: HttpRequest) -> HttpResponse:
 
 @allowed_users(allowed_roles=['org_admin'])
 def organization_add_users(request: HttpRequest, org_id: int) -> HttpResponse:
+    """
+    Allows an organization admin to add users to their organization.
+
+    Filters potential users based on the organization's corporate email domain.
+    If the form is valid, adds the selected users to the organization and redirects.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+        org_id (int): The primary key of the organization.
+
+    Returns:
+        HttpResponse: The rendered add users page or a redirect.
+    """
     org = Organization.objects.get(pk=org_id)
     user_emails = [user.email for user in User.objects.filter(email__endswith=org.corporate_email).exclude(pk=org.user_id)]
     if request.method == 'POST':
@@ -148,12 +251,30 @@ def organization_add_users(request: HttpRequest, org_id: int) -> HttpResponse:
 
 @allowed_users(allowed_roles=['org_admin'])
 def org_settings(request: HttpRequest) -> HttpResponse:
+    """
+    Displays settings for the user's organization.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponse: The rendered organization settings page.
+    """
     org = Organization.objects.get(user_id=request.user.id)
     return render(request, 'users/org_settings.html', {"org": org})
 
 
 @login_required
 def company_properties(request: HttpRequest) -> HttpResponse:
+    """
+    Displays the properties and members of the user's organization.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponse: The rendered company properties page.
+    """
     org = Organization.objects.get(user_id=request.user.id)
     users = Organization.objects.filter(org=org.org)
     return render(request, 'users/company_properties.html', {"org": org, "users": users})
@@ -161,6 +282,18 @@ def company_properties(request: HttpRequest) -> HttpResponse:
 
 @login_required
 def cabinet(request: HttpRequest) -> HttpResponse:
+    """
+    Displays the user's personal cabinet/dashboard.
+
+    Retrieves the user's organization and associated dashboards (BusinessLogic objects).
+    Handles cases where the user is not part of an organization.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponse: The rendered cabinet page.
+    """
     try:
         org: Optional[Organization] = Organization.objects.get(user_id=request.user.id)
         user_organizations = Organization.objects.filter(user=request.user)
@@ -172,10 +305,32 @@ def cabinet(request: HttpRequest) -> HttpResponse:
 
 
 def tariff_plan(request: HttpRequest) -> HttpResponse:
+    """
+    Displays information about available tariff plans.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponse: The rendered tariff plan page.
+    """
     return render(request, 'users/tariff_plan.html')
 
 
 def demo_booking(request: HttpRequest) -> HttpResponse:
+    """
+    Handles requests to book a product demo.
+
+    If the request method is POST and the form is valid, saves the booking request
+    and redirects to the home page.
+    Otherwise, displays the demo booking form.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponse: The rendered demo booking page or a redirect.
+    """
     if request.method == 'POST':
         form = DemoForm(request.POST)
         if form.is_valid():
@@ -187,19 +342,59 @@ def demo_booking(request: HttpRequest) -> HttpResponse:
 
 
 def ask_signup(request: HttpRequest) -> HttpResponse:
-     return render(request, 'users/ask_signup.html')
+    """
+    Displays a page prompting the user to sign up.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponse: The rendered ask signup page.
+    """
+    return render(request, 'users/ask_signup.html')
 
 
 def payment_success_page(request: HttpRequest) -> HttpResponse:
+    """
+    Displays a payment success confirmation page.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponse: The rendered payment success page.
+    """
     return render(request, 'users/payment_success_page.html')
 
 
 def org_registration_process_info(request: HttpRequest) -> HttpResponse:
+    """
+    Displays information about the organization registration process.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponse: The rendered organization registration info page.
+    """
     return render(request, 'users/org_registration_process_info.html')
 
 
 @organization_payment_required
 def choose_tariff_page(request: HttpRequest) -> HttpResponse:
+    """
+    Allows an organization to choose and pay for a tariff plan.
+
+    Calculates the total price based on selected duration and user count.
+    Initiates the payment process using a helper function.
+    Handles tariff model lookups and potential errors.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponse: The rendered tariff selection page or a redirect to the payment provider.
+    """
     if request.method == "POST":
         form = TariffForm(request.POST)
         if form.is_valid():
@@ -233,6 +428,18 @@ def choose_tariff_page(request: HttpRequest) -> HttpResponse:
 
 
 def payment_return_page(request: HttpRequest) -> HttpResponse:
+    """
+    Handles the return from a payment provider.
+
+    Verifies the status of the last payment attempt.
+    Redirects to success or failure pages accordingly.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponse: The rendered payment result page.
+    """
     payment_history = PaymentHistory.objects.filter(user=request.user).last()
     check = check_payment(payment_history)
     if check:
@@ -242,6 +449,18 @@ def payment_return_page(request: HttpRequest) -> HttpResponse:
 
 
 def oferta(request: HttpRequest) -> HttpResponse:
+    """
+    Serves the "Oferta" (Terms of Service) PDF file.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        FileResponse: The PDF file content.
+
+    Raises:
+        Http404: If the file does not exist.
+    """
     file_path = os.path.join("Documents", 'oferta.pdf')
     if os.path.exists(file_path):
         response = FileResponse(open(file_path, 'rb'), content_type='application/pdf')
@@ -252,6 +471,18 @@ def oferta(request: HttpRequest) -> HttpResponse:
 
 
 def privacy_policy(request: HttpRequest) -> HttpResponse:
+    """
+    Serves the Privacy Policy PDF file.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        FileResponse: The PDF file content.
+
+    Raises:
+        Http404: If the file does not exist.
+    """
     file_path = os.path.join("Documents", 'privacy_policy.pdf')
     if os.path.exists(file_path):
         response = FileResponse(open(file_path, 'rb'), content_type='application/pdf')
@@ -262,6 +493,19 @@ def privacy_policy(request: HttpRequest) -> HttpResponse:
 
 
 def feedback(request: HttpRequest) -> HttpResponse:
+    """
+    Handles user feedback submissions.
+
+    If the request method is POST and the form is valid, saves the feedback
+    and sends an email notification.
+    Otherwise, displays the feedback form.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponse: The rendered feedback page or a redirect to the home page.
+    """
     if request.method == "POST":
         form = FeedbackCommentsForm(request.POST)
         if form.is_valid():
@@ -275,11 +519,36 @@ def feedback(request: HttpRequest) -> HttpResponse:
 
 
 def error(request: HttpRequest, exception: Optional[Any] = None, status_code: Optional[int] = None) -> HttpResponse:
+    """
+    Custom error view.
+
+    Renders a generic error page with a 404 status.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+        exception (Optional[Any]): The exception that triggered the error (unused).
+        status_code (Optional[int]): The HTTP status code (unused).
+
+    Returns:
+        HttpResponse: The rendered error page.
+    """
     return render(request, "users/error.html", status=404)
 
 
 @allowed_users(allowed_roles=['org_admin'])
 def user_management(request: HttpRequest) -> HttpResponse:
+    """
+    Displays a management interface for users within the organization.
+
+    Lists users associated with the organization and their permissions/roles.
+    Only accessible by organization admins.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponse: The rendered user management page.
+    """
     org = Organization.objects.get(user_id=request.user.id)
     user_organizations = Organization.objects.filter(org=org.org, corporate_email=org.corporate_email)
     if not user_organizations.exists():
@@ -299,6 +568,19 @@ def user_management(request: HttpRequest) -> HttpResponse:
 
 @allowed_users(allowed_roles=['org_admin'])
 def assign_group(request: HttpRequest, user_id: int, group_name: str) -> HttpResponse:
+    """
+    Assigns a specific group (role) to a user.
+
+    Only accessible by organization admins.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+        user_id (int): The ID of the user to modify.
+        group_name (str): The name of the group to assign.
+
+    Returns:
+        HttpResponse: A redirect to the user management page.
+    """
     user = get_object_or_404(User, id=user_id)
     group = Group.objects.get(name=group_name)
     if group not in user.groups.all():
@@ -308,6 +590,19 @@ def assign_group(request: HttpRequest, user_id: int, group_name: str) -> HttpRes
 
 @allowed_users(allowed_roles=['org_admin'])
 def remove_group(request: HttpRequest, user_id: int, group_name: str) -> HttpResponse:
+    """
+    Removes a specific group (role) from a user.
+
+    Only accessible by organization admins.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+        user_id (int): The ID of the user to modify.
+        group_name (str): The name of the group to remove.
+
+    Returns:
+        HttpResponse: A redirect to the user management page.
+    """
     user = get_object_or_404(User, id=user_id)
     group = get_object_or_404(Group, name=group_name)
     if group in user.groups.all():
@@ -317,10 +612,31 @@ def remove_group(request: HttpRequest, user_id: int, group_name: str) -> HttpRes
 
 # @cache_page(60 * 60 * 24 * 7)
 def faq(request: HttpRequest) -> HttpResponse:
+    """
+    Displays the Frequently Asked Questions (FAQ) page.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponse: The rendered FAQ page.
+    """
     return render(request, 'users/faq.html')
 
 
 def download_android_app(request: HttpRequest) -> HttpResponse:
+    """
+    Serves the Android application APK for download.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponse: The file content with appropriate headers for download.
+
+    Raises:
+        Http404: If the APK file is not found.
+    """
     file_path = "/app/Documents/app.apk"
     if not os.path.exists(file_path):
         raise Http404("File not found")
@@ -334,6 +650,18 @@ def download_android_app(request: HttpRequest) -> HttpResponse:
 
 @login_required
 def notification_preferences(request: HttpRequest) -> HttpResponse:
+    """
+    Manages the user's email notification preferences.
+
+    If request is POST and valid, updates the settings.
+    Otherwise, displays the preferences form.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponse: The rendered notification preferences page or a redirect.
+    """
     settings, created = EmailNotificationSettings.objects.get_or_create(user=request.user)
     if request.method == "POST":
         form = NotificationsForm(request.POST, instance=settings)
@@ -349,6 +677,17 @@ def notification_preferences(request: HttpRequest) -> HttpResponse:
 
 @login_required()  # todo: test ()
 def user_settings(request: HttpRequest) -> HttpResponse:
+    """
+    Displays the user's general settings.
+
+    Retrieves user object and notification preferences.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponse: The rendered settings page.
+    """
     user = User.objects.get(id=request.user.id)
     try:
         preferences: Union[EmailNotificationSettings, str] = EmailNotificationSettings.objects.get(user_id=request.user.id)
@@ -359,6 +698,15 @@ def user_settings(request: HttpRequest) -> HttpResponse:
 
 @login_required
 def show_notifications(request: HttpRequest) -> HttpResponse:
+    """
+    Displays new web notifications for the user.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponse: The rendered notifications page with a count of new notifications.
+    """
     notifications = WebNotifications.objects.filter(is_new=True, user_id=request.user.id)
     notifications_count = notifications.count()
 
@@ -368,5 +716,14 @@ def show_notifications(request: HttpRequest) -> HttpResponse:
 
 @login_required
 def clear_notifications(request: HttpRequest) -> HttpResponse:
+    """
+    Marks all web notifications as read (not new) for the user.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponse: A redirect to the show notifications page.
+    """
     WebNotifications.objects.filter(user=request.user.id).update(is_new=False)
     return HttpResponseRedirect("accounts/show-notifications/")
