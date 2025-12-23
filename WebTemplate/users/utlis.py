@@ -10,7 +10,16 @@ from .models import EmailNotificationSettings, NotificationTypes
 
 
 def match_status_n_preferences(status: str) -> Optional[QuerySet[EmailNotificationSettings]]:
+    """
+    Matches a notification status to the corresponding EmailNotificationSettings.
 
+    Args:
+        status (str): The status string identifying the notification type (e.g., from NotificationTypes).
+
+    Returns:
+        Optional[QuerySet[EmailNotificationSettings]]: A QuerySet of matching settings if found,
+        otherwise None.
+    """
     if status == NotificationTypes.type_1:
         notification_preferences: QuerySet[EmailNotificationSettings] = EmailNotificationSettings.objects.filter(notification_types=NotificationTypes.type_1)
     elif status == NotificationTypes.type_2:
@@ -23,9 +32,29 @@ def match_status_n_preferences(status: str) -> Optional[QuerySet[EmailNotificati
 
 
 def notify_email(pk: Union[int, str], message_type: str, receiver_id: int, sender_id: int) -> None:
+    """
+    Sends an email notification to a user.
+
+    Retrieves the receiver's email address and sends a notification email using SMTP.
+    The email is only sent if the receiver is not the sender.
+
+    Args:
+        pk (Union[int, str]): The primary key of the object related to the notification.
+        message_type (str): Description of the notification type to include in the email body.
+        receiver_id (int): The ID of the User receiving the email.
+        sender_id (int): The ID of the User triggering the notification.
+
+    Returns:
+        None
+
+    Raises:
+        User.DoesNotExist: If the receiver_id does not correspond to an existing User.
+        smtplib.SMTPException: If an error occurs during SMTP communication.
+    """
     receiver: User = User.objects.get(id=receiver_id)
     email_to: str = receiver.email
 
+    # TODO: Move SMTP configuration to settings or environment variables.
     server: smtplib.SMTP = smtplib.SMTP('mail.hosting.reg.ru:587')
     context: ssl.SSLContext = ssl.SSLContext(ssl.PROTOCOL_TLS)
     server.ehlo()
@@ -40,7 +69,7 @@ def notify_email(pk: Union[int, str], message_type: str, receiver_id: int, sende
     if receiver_id == sender_id:
         pass
     else:
-        status_message: str = f"""\
+        status_message: str = f"""
         Новое оповещение - {message_type}.
         Some text here XXXXX
         Ссылка на объект: https://XXXXXX/XXXXXXX/{pk} .
@@ -50,4 +79,3 @@ def notify_email(pk: Union[int, str], message_type: str, receiver_id: int, sende
         server.login(login, password)
         server.sendmail(email_from, email_to, status_text)
         server.quit()
-
