@@ -1,11 +1,11 @@
-from typing import Callable, List, Any
 from django.http import HttpRequest, HttpResponse, HttpResponseForbidden
+from typing import Callable, List, Any, Optional
 from django.shortcuts import redirect
-from django.contrib.auth.decorators import login_required
+from django.urls import reverse
 from functools import wraps
 
 
-def allowed_users(allowed_roles: List[str] = []) -> Callable[[Callable[..., HttpResponse]], Callable[..., HttpResponse]]:
+def allowed_users(allowed_roles: Optional[List[str]] = None) -> Callable[[Callable[..., HttpResponse]], Callable[..., HttpResponse]]:
     """
     Decorator for views that checks if the user is logged in AND has a specific role.
     Redirects to 'login' if not authenticated.
@@ -14,12 +14,14 @@ def allowed_users(allowed_roles: List[str] = []) -> Callable[[Callable[..., Http
     def decorator(view_func: Callable[..., HttpResponse]) -> Callable[..., HttpResponse]:
         @wraps(view_func)
         def wrapper_func(request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+            roles = allowed_roles or []
             if not request.user.is_authenticated:
-                return redirect('login')
+                login_url = reverse("users:login")
+                return redirect(f"{login_url}?next={request.get_full_path()}")
             user_groups: List[str] = []
             if request.user.groups.all():
                 user_groups = [group.name for group in request.user.groups.all()]
-            if any(role in allowed_roles for role in user_groups):
+            if any(role in roles for role in user_groups):
                 return view_func(request, *args, **kwargs)
             else:
                 return HttpResponseForbidden("У вас нет доступа к этой странице")
