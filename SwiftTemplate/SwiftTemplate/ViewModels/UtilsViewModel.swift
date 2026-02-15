@@ -110,7 +110,7 @@ class UtilsViewModel: ObservableObject {
                     let settings = try JSONDecoder().decode(NotificationSettingsModel.self, from: data)
                     DispatchQueue.main.async {
                         self?.settings_data = settings
-                        self?.selectedStatuses = Set(settings.status_notifications)
+//                        self?.selectedStatuses = Set(settings.status_notifications)
                         completion(.success(settings))
                     }
                 } catch {completion(.failure(error))}}

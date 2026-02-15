@@ -153,6 +153,59 @@ cred = credentials.Certificate(os.path.join(NEIGHBORING_DIR, 'firebase_service_a
 FIREBASE_APP = initialize_app(cred, options={'max_workers': 50})
 
 
+# YooKassa Payment Configuration
+YOOKASSA_ACCOUNT_ID = os.environ.get('YOOKASSA_ACCOUNT_ID', '')
+YOOKASSA_SECRET_KEY = os.environ.get('YOOKASSA_SECRET_KEY', '')
+YOOKASSA_TEST_MODE = os.environ.get('YOOKASSA_TEST_MODE', 'True').lower() == 'true'
+
+
 # FCM_DJANGO_SETTINGS = {
 #     "FCM_SERVER_KEY": os.environ.get('FCM_SERVER_KEY')
 # }
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'loki_friendly': {
+            'format': '{asctime} [{levelname}] {name}: {message}',
+            'style': '{',
+            'datefmt': '%Y-%m-%d %H:%M:%S',
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'filename': os.path.join(LOG_DIR, 'django_debug.log'),
+            'when': 'midnight',
+            'interval': 1,
+            'backupCount': 0,
+            'formatter': 'loki_friendly',
+        },
+        'webhook_file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(LOG_DIR, 'webhooks.log'),
+            'formatter': 'loki_friendly',
+        },
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'loki_friendly',
+        },
+    },
+    'loggers': {
+        'django': {'handlers': ['file'],'level': 'INFO','propagate': False,},
+        'django.request': {'handlers': ['file'],'level': 'DEBUG','propagate': False,},
+        'django.db.backends': {'handlers': ['file'],'level': 'ERROR','propagate': False,},
+        'django.db.models': {'handlers': ['file'],'level': 'ERROR','propagate': False,},
+        'django.template': {'handlers': ['file'],'level': 'DEBUG','propagate': False,},
+        'django.channels': {'handlers': ['file'],'level': 'DEBUG','propagate': False,},
+        'django.core.mail': {'handlers': ['file'], 'level': 'DEBUG', 'propagate': False,},
+        'main_app': {'handlers': ['file'], 'level': 'DEBUG', 'propagate': False,},
+        'users.views': {'handlers': ['webhook_file', 'console'], 'level': 'INFO', 'propagate': True, },
+        'users.webhook_utils': {'handlers': ['webhook_file', 'console'], 'level': 'INFO', 'propagate': True, },
+    },
+}
+

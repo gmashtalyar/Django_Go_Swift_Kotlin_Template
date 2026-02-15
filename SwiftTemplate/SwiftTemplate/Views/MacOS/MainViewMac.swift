@@ -20,8 +20,8 @@ struct MainViewMac: View {
             switch sidebarSelection {
             case .home:
                 MenuViewMac(appState: $appState, isPINVerified: $isPINVerified)
-            case .statuses:
-                StatusesViewMac(appState: $appState, isPINVerified: $isPINVerified)
+//            case .statuses:
+//                StatusesViewMac(appState: $appState, isPINVerified: $isPINVerified)
             case .settings:
                 SettingsViewMac(appState: $appState, isPINVerified: $isPINVerified)
             default:

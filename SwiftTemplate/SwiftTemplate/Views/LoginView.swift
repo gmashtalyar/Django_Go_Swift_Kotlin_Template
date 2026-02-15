@@ -1,11 +1,10 @@
-
 import SwiftUI
 
 struct LoginView: View {
     @StateObject var viewModel = LoginViewModel()
     @EnvironmentObject var authViewModel: AuthViewModel
     @Binding var appState: AppState
-    @State private var isKeyboardVisible = false
+    @State private var keyboardHeight: CGFloat = 0
     @Binding var isPINVerified: Bool
     
     @State private var errorMessage = ""
@@ -13,44 +12,91 @@ struct LoginView: View {
     var body: some View {
 #if os(iOS)
         NavigationView {
-            VStack {
-                Image("Logo")
-                Form {
-                    TextField("Логин", text: $viewModel.username).textFieldStyle(DefaultTextFieldStyle())
-                        .autocapitalization(.none)
-                        .autocorrectionDisabled()
-                    TextField("Рабочая почта", text: $viewModel.email).textFieldStyle(DefaultTextFieldStyle())
-                    #if os(iOS)
-                        .autocapitalization(.none)
-                    #endif
-                        .autocorrectionDisabled()
-                    SecureField("Пароль от XXXXXXXX", text: $viewModel.password).textFieldStyle(DefaultTextFieldStyle())
-                    
-                    if !errorMessage.isEmpty {
-                        Text(errorMessage).font(.caption).foregroundColor(.red).padding(.bottom, 8)
-                    }
-                    
-                    TLButton(title: "Войти", background: .blue) {login()}.padding()
-                    TLButton(title: "Демо версия", background: .black) {
-                        loginDemo()
-                    }.padding()
+            ZStack {
+                // Background gradient
+                LinearGradient(gradient: Gradient(colors: [.blue.opacity(0.2), .white]), startPoint: .top, endPoint: .bottom)
+                    .edgesIgnoringSafeArea(.all)
                 
-            }
-
-                VStack {
-                    Text("")
+                VStack(spacing: 20) {
+                    // Logo and title
+                    VStack(spacing: 20) {
+                        Image("Logo").resizable().aspectRatio(contentMode: .fit)
+                            .frame(height: 120)
+                            .clipShape(RoundedRectangle(cornerRadius: 20))
+                        
+                        Text("Вход в систему")
+                            .font(.largeTitle)
+                            .fontWeight(.bold)
+                            .foregroundColor(.primary)
+                    }
+                    .padding(.top, 40)
+                    
+                    // Login form
+                    VStack(spacing: 15) {
+                        TextField("Логин", text: $viewModel.username)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .autocapitalization(.none)
+                            .autocorrectionDisabled()
+                            .padding(.horizontal)
+                        
+                        TextField("Рабочая почта", text: $viewModel.email)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .autocapitalization(.none)
+                            .autocorrectionDisabled()
+                            .padding(.horizontal)
+                        
+                        SecureField("Пароль от СУДЗ", text: $viewModel.password)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .padding(.horizontal)
+                        
+                        if !errorMessage.isEmpty {
+                            Text(errorMessage)
+                                .font(.caption)
+                                .foregroundColor(.red)
+                                .padding(.horizontal)
+                                .transition(.opacity)
+                        }
+                        
+                        // Login button
+                        TLButton(title: "Войти", background: .blue) {
+                            login()
+                        }
+                        .frame(height: 40)
+                        .padding(.horizontal)
+                        .padding(.top, 10)
+                        
+                        // Demo button
+                        TLButton(title: "Демо версия", background: .black) {
+                            loginDemo()
+                        }
+                        .frame(height: 40)
+                        .padding(.horizontal)
+                    }
+                    .padding(.vertical, 20)
+                    .background(
+                        RoundedRectangle(cornerRadius: 20)
+                            .fill(Color.white)
+                            .shadow(radius: 5)
+                    )
+                    .padding(.horizontal)
+                    
+                    Spacer()
                 }
-                .padding(.bottom, 50)
-                Spacer()
+                .offset(y: -keyboardHeight * 0.4) // Adjust view position when keyboard appears
+                .animation(.easeOut(duration: 0.25), value: keyboardHeight)
             }
-            .onAppear{ setupKeyboardHandling()}
-            .onAppear { removeKeyboardHandling() }
+            .onAppear { setupKeyboardHandling() }
+            .onDisappear { removeKeyboardHandling() }
             .fullScreenCover(isPresented: $authViewModel.isLoggedIn) {
                 MainView(appState: $appState, isPINVerified: $isPINVerified)
+            }
+            .onTapGesture {
+                UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
             }
         }
 #endif
     }
+    
 #if os(iOS)
     private func login() {
         let lowercaseEmail = viewModel.email.lowercased()
@@ -86,12 +132,14 @@ struct LoginView: View {
     }
     
     private func setupKeyboardHandling() {
-        NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillShowNotification, object: nil, queue: .main) { _ in
-            isKeyboardVisible = true  // Keyboard is visible
+        NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillShowNotification, object: nil, queue: .main) { notification in
+            if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
+                keyboardHeight = keyboardFrame.height
+            }
         }
         
         NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillHideNotification, object: nil, queue: .main) { _ in
-            isKeyboardVisible = false  // Keyboard is hidden
+            keyboardHeight = 0
         }
     }
     
@@ -108,7 +156,7 @@ struct LoginView: View {
             case .networkError:
                 return "Проверьте подключение к интернету."
             default:
-                return "Произошла неизвестная ошибка. Попробуйте езе раз."
+                return "Произошла неизвестная ошибка. Попробуйте еще раз."
             }
         }
         return "Произошла ошибка. Попробуйте позже."
@@ -122,7 +170,16 @@ enum LoginError: Error {
     case unknown
 }
 
-
-//#Preview {
-//    LoginView()
-//}
+struct LoginView_Previews: PreviewProvider {
+    @State private static var appState: AppState = .pinSetup
+    @State private static var isPINVerified: Bool = false
+    static var previews: some View {
+        let authViewModel = AuthViewModel()
+        authViewModel.isLoggedIn = false
+        
+        return Group {
+            LoginView(appState: $appState, isPINVerified: $isPINVerified)
+                .environmentObject(authViewModel)
+        }
+    }
+}

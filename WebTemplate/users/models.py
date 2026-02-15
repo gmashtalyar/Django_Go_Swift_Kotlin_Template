@@ -4,7 +4,6 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 from .tasks import send_demo_request_email_task, send_payment_notification_email_task
 from django.utils import timezone
-
 from main_app.models import BusinessLogicModel
 
 User = settings.AUTH_USER_MODEL
@@ -54,6 +53,8 @@ class TariffModel(models.Model):
 class PaymentHistory(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     payment_id = models.CharField(max_length=255)
+    status = models.CharField(max_length=20, default='pending')
+    created_at = models.DateTimeField(default=timezone.now)
 
 
 class FeedbackComments(models.Model):

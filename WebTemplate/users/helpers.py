@@ -8,73 +8,109 @@ from typing import Optional, Union, Tuple, Any
 from yookassa import Payment, Configuration
 import uuid
 from .models import PaymentHistory, Organization, WebNotification
+from yookassa import Payment, Configuration
+from yookassa.domain.response import PaymentResponse
+
+from django.conf import settings
+from django.http import HttpRequest
 
 
-def payment_helper(request: Any, total_price: Union[int, float, str]) -> Tuple[str, str]:
+def get_yookassa_config():
+    """Configure YooKassa SDK with credentials from settings."""
+    Configuration.account_id = settings.YOOKASSA_ACCOUNT_ID
+    Configuration.secret_key = settings.YOOKASSA_SECRET_KEY
+
+
+def payment_helper(request: HttpRequest, total_price: Union[int, float, str]) -> Tuple[str, str]:
     """
-    Initiates a payment process using the Yookassa API.
+    Initiates a payment transaction via YooKassa.
 
-    Sets up the configuration with account ID and secret key, creates a unique
-    idempotence key, and sends a payment creation request to Yookassa.
+    Credentials are loaded from Django settings (environment variables).
 
     Args:
-        request (Any): The Django HttpRequest object containing user information.
-                       (Type is Any to avoid circular imports or strict coupling).
-        total_price (Union[int, float, str]): The amount to be charged.
+        request (HttpRequest): The Django request object containing user information.
+        total_price (Union[int, float, str]): The amount to be charged for the payment.
 
     Returns:
-        Tuple[str, str]: A tuple containing the confirmation URL (where the user
-                         should be redirected) and the unique payment ID.
+        Tuple[str, str]: A tuple containing:
+            - confirmation_url (str): The URL to redirect the user for payment confirmation.
+            - payment.id (str): The unique identifier for the created payment.
     """
-    # TODO: request type should be HttpRequest from django.http, but using Any to avoid import
-    Configuration.account_id = "some int here (acc number)"
-    Configuration.secret_key = ""
+    get_yookassa_config()
+
     idempotence_key: str = str(uuid.uuid4())
-    payment: Payment = Payment.create({
+
+    # Build return URL dynamically
+    return_url = request.build_absolute_uri('/accounts/payment-return-page')
+
+    payment: PaymentResponse = Payment.create({
         "amount": {
             "value": f"{total_price}",
             "currency": "RUB"
         },
         "confirmation": {
             "type": "redirect",
-            "return_url": f"",
+            "return_url": return_url,
         },
         "metadata": {
             "user_id": request.user.id,
-            "payment": f"{total_price}"
+            "amount": f"{total_price}"
         },
-        "test": True,
+        "test": settings.YOOKASSA_TEST_MODE,
         "capture": True,
-        "description": "Оплата XXXXXXXX"
+        "description": "Оплата XXXX"
     }, idempotence_key)
-    confirmation_url: str = payment.confirmation.confirmation_url
-    return confirmation_url, payment.id
+
+    return payment.confirmation.confirmation_url, payment.id
 
 
-def check_payment(payment_history: PaymentHistory) -> bool:
+def check_payment(payment_history: PaymentHistory) -> str:
     """
-    Verifies the status of a specific payment with Yookassa.
-
-    Retrieves payment details using the payment ID from the provided history record.
-    If the payment is confirmed as paid, it updates the associated Organization's
-    payment status.
+    Check payment status with YooKassa and activate organization if successful.
 
     Args:
-        payment_history (PaymentHistory): The payment history record containing
-                                          the payment ID to check.
+        payment_history: PaymentHistory instance to check
 
     Returns:
-        bool: True if the payment was successfully paid and the organization
-              updated, False otherwise.
+        Status string: 'succeeded', 'pending', or 'failed'
     """
-    payment: Payment = Payment.find_one(payment_history.payment_id)
-    if payment.paid:
+    # Idempotency: Already processed successfully?
+    if payment_history.status == 'succeeded':
+        # Verify organization is actually activated
+        org = Organization.objects.filter(user=payment_history.user).first()
+        if org and org.payment:
+            return 'succeeded'
+
+    get_yookassa_config()
+
+    payment: PaymentResponse = Payment.find_one(payment_history.payment_id)
+
+    if payment.status == 'succeeded' or payment.paid:
+        # Double-check we haven't already processed this
+        if payment_history.status == 'succeeded':
+            return 'succeeded'
+
+        # Update payment record
+        payment_history.status = 'succeeded'
+        payment_history.save(update_fields=['status'])
+
+        # Activate organization (SimpleBoard's business logic)
         org: Organization = Organization.objects.get(user=payment_history.user)
         org.payment = True
         org.save()
-        return True
-    else:
-        return False
+
+        return 'succeeded'
+
+    elif payment.status == 'canceled':
+        payment_history.status = 'canceled'
+        payment_history.save(update_fields=['status'])
+        return 'failed'
+
+    elif payment.status in ('pending', 'waiting_for_capture'):
+        # Payment still processing
+        return 'pending'
+
+    return 'failed'
 
 
 def close_item_notifications(arg1: Union[int, Any], arg2: Optional[int] = None) -> None:

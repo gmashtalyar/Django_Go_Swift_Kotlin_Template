@@ -43,7 +43,7 @@ struct NotificationSettingsView: View {
                 Toggle("Статус", isOn: $status).toggleStyle(SwitchToggleStyle(tint: .accentColor))
             }
             Button("Установить настройки") { if let token = Messaging.messaging().fcmToken {
-                vm.sendNotificationPreferences(token: token, params: notificaiton_params)
+                vm.sendNotificationPreferences(token: token, comment_params: notificaiton_params, status_params: [])
                 is_button_pressed = true}
             }
         }

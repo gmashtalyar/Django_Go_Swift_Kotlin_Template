@@ -1,0 +1,44 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Обработка платежа{% endblock %}
+
+{% block content %}
+
+<div class="row">
+<div class="col-1"></div>
+<div class="col-md-10 col-12">
+<div class="ui raised very padded segment">
+
+    <div class="text-center">
+        <!-- Loading spinner -->
+        <div class="ui active inline loader" style="margin-bottom: 2rem;"></div>
+
+        <h3>Обработка платежа</h3>
+
+        <p style="margin-top: 1.5rem; color: #666;">
+            Пожалуйста, подождите, пока мы подтверждаем ваш платеж.
+            Эта страница обновится автоматически.
+        </p>
+
+        <p style="margin-top: 1rem; font-size: 0.9rem; color: #999;">
+            Не закрывайте эту страницу.
+        </p>
+
+        <div class="ui divider" style="margin: 2rem 0;"></div>
+
+        <button class="ui primary button" onclick="location.reload();">
+            Проверить статус сейчас
+        </button>
+    </div>
+
+<br><br><br>
+</div></div></div>
+
+<script>
+    // Auto-refresh after 5 seconds
+    setTimeout(function() {
+        location.reload();
+    }, 5000);
+</script>
+
+{% endblock %}

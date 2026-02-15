@@ -31,8 +31,8 @@ services:
       - "8000:8000"
     networks:
       - template-network
-    environment:
-      <<: *environment-defaults
+    env_file:
+      - .env
     depends_on:
       - postgres
     volumes:

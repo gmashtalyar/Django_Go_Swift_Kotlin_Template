@@ -25,7 +25,12 @@ from .forms import SignUpForm, LoginForm, UserDataChangeForm, OrgCreationForm, A
     FeedbackCommentsForm, NotificationsForm
 from .helpers import payment_helper, check_payment
 from .models import Organization, TariffModel, PaymentHistory, EmailNotificationSettings, WebNotifications
+import logging
+from django.views.decorators.http import require_POST
+from .webhook_utils import get_client_ip, is_valid_yookassa_ip
 
+
+logger = logging.getLogger(__name__)
 
 @csrf_exempt
 def signup_view(request: HttpRequest) -> HttpResponse:
@@ -410,7 +415,8 @@ def choose_tariff_page(request: HttpRequest) -> HttpResponse:
                 else:
                     total_price = base_price
                 url, payment_id = payment_helper(request, total_price)
-                PaymentHistory.objects.create(user=request.user, payment_id=payment_id)
+                PaymentHistory.objects.create(user=request.user, payment_id=payment_id, status='pending')
+                request.session['pending_payment_id'] = payment_id  # Store payment_id in session to retrieve correct record on return
                 return HttpResponseRedirect(url)
             except TariffModel.DoesNotExist:
                 form.add_error(None, "Tariff plan not found.")
@@ -428,24 +434,89 @@ def choose_tariff_page(request: HttpRequest) -> HttpResponse:
 
 
 def payment_return_page(request: HttpRequest) -> HttpResponse:
+    def payment_return_page(request: HttpRequest) -> HttpResponse:
+        """
+        Handle the return redirect from the payment gateway.
+
+        Checks payment status and renders appropriate page:
+        - Success: Payment completed, organization activated
+        - Pending: Payment still processing, auto-refresh page
+        - Failure: Payment failed or canceled
+
+        Args:
+            request (HttpRequest): The HTTP request object.
+
+        Returns:
+            HttpResponse: The rendered payment success, pending, or failure page.
+        """
+        # Get payment_id from session (stored before redirect to YooKassa)
+        # Don't pop yet - we need it for pending page refreshes
+        payment_id = request.session.get('pending_payment_id')
+
+        if payment_id:
+            payment_history = PaymentHistory.objects.filter(payment_id=payment_id).first()
+        else:
+            # Fallback to last payment for user (less reliable)
+            payment_history = PaymentHistory.objects.filter(user=request.user).last()
+
+        if not payment_history:
+            return render(request, 'users/payment_failure_page.html', {'error': 'Платеж не найден'})
+
+        status = check_payment(payment_history)
+
+        if status == 'succeeded':
+            # Clear session now that payment is complete
+            request.session.pop('pending_payment_id', None)
+            return render(request, 'users/payment_success_page.html')
+
+        elif status == 'pending':
+            # Payment still processing - show waiting page with auto-refresh
+            # Keep payment_id in session for subsequent refreshes
+            return render(request, 'users/payment_pending_page.html', {'payment': payment_history})
+
+        else:
+            # Clear session on failure
+            request.session.pop('pending_payment_id', None)
+            return render(request, 'users/payment_failure_page.html', {'payment': payment_history})
+
+
+@csrf_exempt
+@require_POST
+def yookassa_webhook(request: HttpRequest) -> HttpResponse:
     """
-    Handles the return from a payment provider.
-
-    Verifies the status of the last payment attempt.
-    Redirects to success or failure pages accordingly.
-
-    Args:
-        request (HttpRequest): The HTTP request object.
-
-    Returns:
-        HttpResponse: The rendered payment result page.
+    Handle YooKassa webhook notifications and process payment verification.
     """
-    payment_history = PaymentHistory.objects.filter(user=request.user).last()
-    check = check_payment(payment_history)
-    if check:
-        return render(request, 'users/payment_success_page.html')
-    else:
-        return render(request, 'users/payment_failure_page.html')
+    client_ip = get_client_ip(request)
+    if not is_valid_yookassa_ip(client_ip):
+        logger.warning(f"Webhook rejected: Invalid source IP {client_ip}")
+        return HttpResponse(status=403)
+
+    try:
+        payload = json.loads(request.body)
+        event_type = payload.get('event')
+        payment_data = payload.get('object', {})
+        payment_id = payment_data.get('id')
+        if not payment_id:
+            logger.error("Webhook missing payment ID in payload")
+            return HttpResponse(status=400)
+    except json.JSONDecodeError as error:
+        logger.error(f"Webhook invalid JSON: {error}")
+        return HttpResponse(status=400)
+
+    logger.info(f"Webhook received: {event_type} for payment {payment_id}")
+
+    payment_history = PaymentHistory.objects.filter(payment_id=payment_id).first()
+    if not payment_history:
+        logger.warning(f"Webhook: PaymentHistory not found for {payment_id}")
+        return HttpResponse(status=200)
+
+    if payment_history.status == 'succeeded':
+        logger.info(f"Webhook: Payment {payment_id} already processed, skipping")
+        return HttpResponse(status=200)
+
+    status = check_payment(payment_history)
+    logger.info(f"Webhook processed: payment {payment_id} -> status: {status}")
+    return HttpResponse(status=200)
 
 
 def oferta(request: HttpRequest) -> HttpResponse:

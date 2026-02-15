@@ -19,7 +19,7 @@ struct MainView: View {
                 NavigationView{
                     List{
                         Section {
-                            NavigationLink(destination: ClientsListView(clients_type: "new")){ Text("Новое")}
+//                            NavigationLink(destination: ClientsListView(clients_type: "new")){ Text("Новое")}
                         }
                     }
                     
@@ -101,17 +101,17 @@ struct MainView: View {
     }
     
     
-    func clientCount(forTypes types: [String]) -> Int {
-        if let clients = viewModel.clients_model_data {
-            return clients.filter { client in
-                types.contains { status in
-                    client.clientStatus.localizedCaseInsensitiveContains(status)
-                }
-            }.count
-        } else {
-            return 0
-        }
-    }
+//    func clientCount(forTypes types: [String]) -> Int {
+//        if let clients = viewModel.clients_model_data {
+//            return clients.filter { client in
+//                types.contains { status in
+//                    client.clientStatus.localizedCaseInsensitiveContains(status)
+//                }
+//            }.count
+//        } else {
+//            return 0
+//        }
+//    }
     
 }
 

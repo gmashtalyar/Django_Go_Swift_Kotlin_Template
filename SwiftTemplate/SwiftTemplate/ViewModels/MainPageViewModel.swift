@@ -3,30 +3,30 @@ import Combine
 
 class MainPageViewModel: ObservableObject {
     
-    @Published var clients_model_data: [ClientsJson]?
+//    @Published var clients_model_data: [ClientsJson]?
     @Published var statuses: [String] = []
 
     init() {
-        fetch(clients_type:"")
+//        fetch(clients_type:"")
     }
 
-    func fetch(clients_type: String) {
-        
-        guard let url = buildURL() else { return }
-//        guard let url = URL(string: "https://www.XXXXXX.ru/swift/api_clients_swift/all") else { return }
-        let task  = URLSession.shared.dataTask(with: url) { [weak self] data, _, error in
-
-            guard let data = data, error == nil else { return }
-
-            do {
-                let clients_model_data = try JSONDecoder().decode([ClientsJson].self, from: data)
-                DispatchQueue.main.async {
-                    self?.clients_model_data = clients_model_data
-                }
-            } catch {print(error)}
-        }
-        task.resume()
-    }
+//    func fetch(clients_type: String) {
+//        
+//        guard let url = buildURL() else { return }
+////        guard let url = URL(string: "https://www.XXXXXX.ru/swift/api_clients_swift/all") else { return }
+//        let task  = URLSession.shared.dataTask(with: url) { [weak self] data, _, error in
+//
+//            guard let data = data, error == nil else { return }
+//
+//            do {
+//                let clients_model_data = try JSONDecoder().decode([ClientsJson].self, from: data)
+//                DispatchQueue.main.async {
+//                    self?.clients_model_data = clients_model_data
+//                }
+//            } catch {print(error)}
+//        }
+//        task.resume()
+//    }
     
     
     private func buildURL() -> URL? {

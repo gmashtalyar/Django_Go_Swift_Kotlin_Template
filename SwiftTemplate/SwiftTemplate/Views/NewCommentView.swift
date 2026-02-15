@@ -31,24 +31,24 @@ struct NewCommentView: View {
                     dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSSSSS"
                     commentDate = dateFormatter.string(from: Date())
                     
-                    let newComment = NewCommentModel(
-                        id: nil,
-                        clientInn: clientID,
-                        author: loggedInUser.id,
-                        comment: comment,
-                        commentDate: commentDate
-                    )
+//                    let newComment = NewCommentModel(
+//                        id: nil,
+//                        clientInn: clientID,
+//                        author: loggedInUser.id,
+//                        comment: comment,
+//                        commentDate: commentDate
+//                    )
                     
-                    viewModel.createComment(commentType: commentType, comment: newComment) { result in
-                        print(commentType)
-                        switch result {
-                        case .success(let createdComment):
-                            print("Comment created successfully: \(createdComment)")
-                            self.isShowingNewCommentView = false
-                        case .failure(let error):
-                            print("Failed to create comment. Error: \(error)")
-                        }
-                    }
+//                    viewModel.createComment(commentType: commentType, comment: newComment) { result in
+//                        print(commentType)
+//                        switch result {
+//                        case .success(let createdComment):
+//                            print("Comment created successfully: \(createdComment)")
+//                            self.isShowingNewCommentView = false
+//                        case .failure(let error):
+//                            print("Failed to create comment. Error: \(error)")
+//                        }
+//                    }
                 }
                 onCommentPublished()
             }

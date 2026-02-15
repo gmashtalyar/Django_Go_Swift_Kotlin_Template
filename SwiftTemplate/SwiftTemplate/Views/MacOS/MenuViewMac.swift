@@ -17,14 +17,14 @@ struct MenuViewMac: View {
         NavigationStack {
             List{
                 Section {
-                    NavigationLink(destination: ClientsListView(clients_type: "new")){ Text("Новые заявки")}
-                    NavigationLink(destination: ClientsListView(clients_type: "open")){ Text("Открытые лимиты")}
-                    NavigationLink(destination: ClientsListView(clients_type: "late")){ Text("Просроченная ДЗ")}
-                    NavigationLink(destination: ClientsListView(clients_type: "closed")){ Text("Закрытые клиенты")}
-                    NavigationLink(destination: ClientsListView(clients_type: "all")){ Text("Все клиенты")}
+//                    NavigationLink(destination: ClientsListView(clients_type: "new")){ Text("Новые заявки")}
+//                    NavigationLink(destination: ClientsListView(clients_type: "open")){ Text("Открытые лимиты")}
+//                    NavigationLink(destination: ClientsListView(clients_type: "late")){ Text("Просроченная ДЗ")}
+//                    NavigationLink(destination: ClientsListView(clients_type: "closed")){ Text("Закрытые клиенты")}
+//                    NavigationLink(destination: ClientsListView(clients_type: "all")){ Text("Все клиенты")}
                 }
                 Section {
-                    NavigationLink(destination: NewClientView(viewModel: NewClientViewModel())){ Text("Новая заявка на лимит")}
+//                    NavigationLink(destination: NewClientView(viewModel: NewClientViewModel())){ Text("Новая заявка на лимит")}
                 }
             }
         }
